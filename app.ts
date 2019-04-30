@@ -6,6 +6,7 @@ import logger from 'morgan';
 import { StatusError } from './lib/errors';
 
 import homeRoutes from './routes/home';
+import registerRoutes from './routes/register';
 
 const viewInstance = expressHandlebars.create({
   defaultLayout: 'main.hbs',
@@ -27,6 +28,7 @@ app.set('view engine', 'hbs');
 
 app.use('/', homeRoutes);
 app.use('/home', homeRoutes);
+app.use('/register', registerRoutes);
 
 app.use(
   (_req: Request, _res: Response, next: NextFunction): void => {
