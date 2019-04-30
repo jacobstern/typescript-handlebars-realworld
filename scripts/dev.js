@@ -7,7 +7,10 @@ async function main() {
   const livereloadServer = livereload.createServer({ exts: ['hbs'] });
   livereloadServer.watch(rootDir);
 
-  const tsNodeDev = spawn('ts-node-dev', '--respawn --transpileOnly server.ts'.split(' '));
+  const tsNodeDev = spawn(
+    'ts-node-dev',
+    '--respawn --transpileOnly --no-notify server.ts'.split(' ')
+  );
   tsNodeDev.stdout.on('data', chunk => {
     if (/^Express server listening on port/.test(chunk.toString())) {
       livereloadServer.refresh(rootDir);
