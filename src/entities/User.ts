@@ -5,10 +5,10 @@ export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ unique: true })
+  @Column({ unique: true, type: 'citext' })
   username: string;
 
-  @Column({ unique: true })
+  @Column({ unique: true, type: 'citext' })
   email: string;
 
   @Column()

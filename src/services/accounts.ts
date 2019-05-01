@@ -1,22 +1,18 @@
 import bcrypt from 'bcrypt';
-import { User } from '../entities/User';
 import { getManager } from 'typeorm';
+import { User } from '../entities/User';
+import { RegisterForm } from '../forms/RegisterForm';
 
 async function hashPassword(password: string): Promise<string> {
   return bcrypt.hash(password, 10);
 }
 
-export interface NewUser {
-  username: string;
-  email: string;
-  password: string;
-}
-
-export async function createUser(user: NewUser): Promise<User> {
+export async function createUser(form: RegisterForm): Promise<User> {
   const manager = getManager();
-  const created = manager.create(User, {
-    ...user,
-    password: await hashPassword(user.password),
+  const newUser = manager.create(User, {
+    username: form.username,
+    email: form.email,
+    password: await hashPassword(form.password),
   });
-  return manager.save(created);
+  return manager.save(newUser);
 }

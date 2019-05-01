@@ -9,7 +9,7 @@
     "prebuild": "npm run clean",
     "build": "tsc",
     "dev": "node ./scripts/dev.js",
-    "repl": "ts-node",
+    "repl": "node --experimental-repl-await -r ts-node/register",
     "start": "ts-node src/server.ts"
   },
   "repository": {
@@ -29,7 +29,7 @@
     "eslint-config-prettier": "^4.2.0",
     "prettier": "^1.17.0",
     "rimraf": "^2.6.3",
-    "ts-node": "3.3.0",
+    "ts-node": "^8.1.0",
     "ts-node-dev": "^1.0.0-pre.32"
   },
   "dependencies": {
@@ -37,13 +37,16 @@
     "@types/compression": "^0.0.36",
     "@types/express": "^4.16.1",
     "@types/express-handlebars": "^0.0.31",
+    "@types/express-session": "^1.15.12",
     "@types/helmet": "^0.0.43",
     "@types/morgan": "^1.7.35",
     "@types/node": "^11.13.8",
     "bcrypt": "^3.0.6",
+    "class-validator": "^0.9.1",
     "compression": "^1.7.4",
     "express": "^5.0.0-alpha.7",
     "express-handlebars": "^3.0.2",
+    "express-session": "^1.16.1",
     "helmet": "^3.16.0",
     "livereload": "^0.7.0",
     "morgan": "^1.9.1",
