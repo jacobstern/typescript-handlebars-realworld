@@ -7,8 +7,7 @@
           Home
         </a>
       </li>
-      {{!-- These pages require a logged in user --}}
-      {{#if false}}
+      {{#if user}}
         <li class="nav-item">
           <a class="nav-link {{#if nav.editor}}active{{/if}}" href="/editor">
             <i class="ion-compose"></i>&nbsp;New Post
@@ -19,17 +18,23 @@
             <i class="ion-gear-a"></i>&nbsp;Settings
           </a>
         </li>
+        <li class="nav-item">
+          <a class="nav-link {{#if nav.userProfile}}active{{/if}}" href="/profile/{{user.username}}">
+            {{user.username}}
+          </a>
+        </li>
+      {{else}}
+        <li class="nav-item">
+          <a class="nav-link {{#if nav.login}}active{{/if}}" href="/login">
+            Sign in
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {{#if nav.register}}active{{/if}}" href="/register">
+            Sign up
+          </a>
+        </li>
       {{/if}}
-      <li class="nav-item">
-        <a class="nav-link {{#if nav.login}}active{{/if}}" href="/login">
-          Sign in
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link {{#if nav.register}}active{{/if}}" href="/register">
-          Sign up
-        </a>
-      </li>
     </ul>
   </div>
 </nav>

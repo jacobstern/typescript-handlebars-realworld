@@ -5,6 +5,8 @@ import {
   ValidatorConstraintInterface,
   Validate,
   Validator,
+  IsOptional,
+  IsUrl,
 } from 'class-validator';
 import { validateHelper } from './validate-helper';
 import { PlainObject } from './plain-object';
@@ -16,7 +18,7 @@ class UsernameAvailableConstraint implements ValidatorConstraintInterface {
     if (typeof value !== 'string') {
       return false;
     }
-    if (value.length < 3) {
+    if (value.length === 0) {
       // Short-circuit if username is clearly not valid
       return true;
     }
@@ -46,21 +48,59 @@ class EmailAvailableConstraint implements ValidatorConstraintInterface {
   }
 }
 
-export class RegisterForm {
+class UserFormBase {
+  @IsOptional()
   @MinLength(3)
   @Validate(UsernameAvailableConstraint)
-  public readonly username: string;
+  public readonly username?: string;
 
+  @IsOptional()
   @IsEmail()
   @Validate(EmailAvailableConstraint)
+  public readonly email?: string;
+
+  @IsOptional()
+  @MinLength(8)
+  public readonly password?: string;
+
+  protected constructor() {}
+}
+
+export class UserForm extends UserFormBase {
+  private __nominal: void;
+
+  public readonly username: string;
+
   public readonly email: string;
 
-  @MinLength(8)
   public readonly password: string;
 
-  private constructor() {}
+  private constructor() {
+    super();
+  }
 
-  public static async validate(form: PlainObject<RegisterForm>): Promise<RegisterForm> {
-    return validateHelper(new RegisterForm(), form);
+  public static async validate(form: PlainObject<UserForm>): Promise<UserForm> {
+    return validateHelper(new UserForm(), form);
+  }
+}
+
+export class UserUpdatesForm extends UserFormBase {
+  private __nominal: void;
+
+  @IsOptional()
+  public readonly image?: string;
+
+  @IsOptional()
+  @IsUrl()
+  public readonly bio?: string;
+
+  private constructor() {
+    super();
+  }
+
+  public static async validate(
+    form: PlainObject<UserUpdatesForm>
+  ): Promise<UserUpdatesForm> {
+    return validateHelper(new UserUpdatesForm(), form);
   }
 }

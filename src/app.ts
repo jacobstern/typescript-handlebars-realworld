@@ -1,5 +1,9 @@
 import compression from 'compression';
+import cookieParser from 'cookie-parser';
 import express, { NextFunction, Request, Response } from 'express';
+import passport from 'passport';
+import { Strategy as PassportLocalStrategy } from 'passport-local';
+import session from 'express-session';
 import expressHandlebars from 'express-handlebars';
 import helmet from 'helmet';
 import logger from 'morgan';
@@ -7,10 +11,55 @@ import { StatusError } from './errors';
 
 import homeRoutes from './routes/home';
 import registerRoutes from './routes/register';
+import { findUserByUsername, findUserById } from './services/accounts';
+import { User } from './entities/User';
+import { TypeormStore } from 'typeorm-store';
+import { getConnection } from 'typeorm';
+import { Session } from './entities/Session';
 
 const viewInstance = expressHandlebars.create({
   defaultLayout: 'main.hbs',
   extname: '.hbs',
+});
+
+passport.use(
+  new PassportLocalStrategy(
+    { usernameField: 'email', session: true },
+    (username, password, cb) => {
+      findUserByUsername(username)
+        .then(user => {
+          if (user === undefined || !user.checkPassword(password)) {
+            return cb(null, false);
+          }
+          return cb(null, user);
+        })
+        .catch(cb);
+    }
+  )
+);
+
+passport.serializeUser<User, User['id']>((user, cb) => {
+  cb(null, user.id);
+});
+
+passport.deserializeUser<User, User['id']>((id, cb) => {
+  findUserById(id)
+    .then(user => {
+      return cb(null, user);
+    })
+    .catch(cb);
+});
+
+const sessionMiddleware = session({
+  secret: 'keyboard cat',
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    maxAge: 30 * 24 * 60 * 60 * 1000,
+  },
+  store: new TypeormStore({
+    repository: getConnection().getRepository(Session),
+  }),
 });
 
 const app = express();
@@ -23,6 +72,11 @@ app.use(helmet());
 app.use(compression());
 app.use(express.urlencoded({ extended: false }));
 app.use(logger('dev'));
+app.use(cookieParser());
+app.use(sessionMiddleware);
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.engine('hbs', viewInstance.engine);
 app.set('view engine', 'hbs');

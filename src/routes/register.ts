@@ -1,8 +1,9 @@
 import express, { Request, Response } from 'express';
 import { createUser } from '../services/accounts';
-import { RegisterForm } from '../forms/RegisterForm';
+import { UserForm } from '../forms/UserForm';
 import { MultiValidationError } from '../forms/MultiValidationError';
 import { collectErrorMessages } from '../collect-error-messages';
+import { NextFunction } from 'connect';
 
 const router = express.Router();
 
@@ -13,11 +14,16 @@ router.get('/', (_req: Request, res: Response) => {
   });
 });
 
-router.post('/', async (req: Request, res: Response) => {
+router.post('/', async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const form = await RegisterForm.validate(req.body);
-    await createUser(form);
-    res.redirect('/');
+    const form = await UserForm.validate(req.body);
+    const user = await createUser(form);
+    req.login(user, err => {
+      if (err) {
+        next(err);
+      }
+      res.redirect('/');
+    });
   } catch (e) {
     if (e instanceof MultiValidationError) {
       res.render('register/index', {
