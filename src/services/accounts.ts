@@ -16,3 +16,15 @@ export async function createUser(form: RegisterForm): Promise<User> {
   });
   return manager.save(newUser);
 }
+
+export async function isUsernameAvailable(username: string): Promise<boolean> {
+  const manager = getManager();
+  const found = await manager.find(User, { username });
+  return found.length === 0;
+}
+
+export async function isEmailAvailable(email: string): Promise<boolean> {
+  const manager = getManager();
+  const found = await manager.find(User, { email });
+  return found.length === 0;
+}

@@ -2,6 +2,7 @@ import express, { Request, Response } from 'express';
 import { createUser } from '../services/accounts';
 import { RegisterForm } from '../forms/RegisterForm';
 import { MultiValidationError } from '../forms/MultiValidationError';
+import { collectErrorMessages } from '../collect-error-messages';
 
 const router = express.Router();
 
@@ -19,7 +20,12 @@ router.post('/', async (req: Request, res: Response) => {
     res.redirect('/');
   } catch (e) {
     if (e instanceof MultiValidationError) {
-      // TODO
+      res.render('register/index', {
+        title: 'Sign up',
+        nav: { register: true },
+        errorMessages: collectErrorMessages(e.errors),
+        register: req.body,
+      });
     } else {
       throw e;
     }
