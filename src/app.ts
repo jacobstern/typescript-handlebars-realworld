@@ -7,14 +7,16 @@ import session from 'express-session';
 import expressHandlebars from 'express-handlebars';
 import helmet from 'helmet';
 import logger from 'morgan';
+import flash from 'connect-flash';
 import { TypeormStore } from 'typeorm-store';
 import { getConnection } from 'typeorm';
 import { StatusError } from './errors';
-import { findUserByUsername, findUser } from './services/accounts';
+import { findUser, findUserByEmail } from './services/accounts';
 import { User } from './entities/User';
 import { Session } from './entities/Session';
 
 import homeRoutes from './routes/home';
+import loginRoutes from './routes/login';
 import registerRoutes from './routes/register';
 import settingsRoutes from './routes/settings';
 
@@ -26,8 +28,8 @@ const viewInstance = expressHandlebars.create({
 passport.use(
   new PassportLocalStrategy(
     { usernameField: 'email', session: true },
-    (username, password, cb) => {
-      findUserByUsername(username)
+    (email, password, cb) => {
+      findUserByEmail(email)
         .then(user => {
           if (user === undefined || !user.checkPassword(password)) {
             return cb(null, false);
@@ -74,6 +76,7 @@ app.use(compression());
 app.use(express.urlencoded({ extended: false }));
 app.use(logger('dev'));
 app.use(cookieParser());
+app.use(flash());
 app.use(sessionMiddleware);
 
 app.use(passport.initialize());
@@ -84,6 +87,7 @@ app.set('view engine', 'hbs');
 
 app.use('/', homeRoutes);
 app.use('/home', homeRoutes);
+app.use('/login', loginRoutes);
 app.use('/register', registerRoutes);
 app.use('/settings', settingsRoutes);
 

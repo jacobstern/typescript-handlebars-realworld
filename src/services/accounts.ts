@@ -29,6 +29,12 @@ export async function isUsernameAvailable(username: string): Promise<boolean> {
     .then(found => found === undefined);
 }
 
+export async function findUserByEmail(
+  email: string
+): Promise<User | undefined> {
+  return await getManager().findOne(User, { email });
+}
+
 export async function findUserByUsername(
   username: string
 ): Promise<User | undefined> {
