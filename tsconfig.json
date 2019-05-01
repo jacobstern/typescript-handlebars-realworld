@@ -9,7 +9,11 @@
     "strict": true,
     "module": "commonjs",
     "resolveJsonModule": true,
-    "outDir": "dist/",
+    "outDir": "build/",
+    "strictPropertyInitialization": false,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
     "typeRoots": ["./node_modules/@types/"]
-  }
+  },
+  "exclude": ["node_modules/", "build/"]
 }

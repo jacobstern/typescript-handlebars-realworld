@@ -9,7 +9,7 @@ async function main() {
 
   const tsNodeDev = spawn(
     'ts-node-dev',
-    '--respawn --transpileOnly --no-notify server.ts'.split(' ')
+    '--respawn --transpileOnly --no-notify src/server.ts'.split(' ')
   );
   tsNodeDev.stdout.on('data', chunk => {
     if (/^Express server listening on port/.test(chunk.toString())) {

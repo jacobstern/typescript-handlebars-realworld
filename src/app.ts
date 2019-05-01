@@ -3,7 +3,7 @@ import express, { NextFunction, Request, Response } from 'express';
 import expressHandlebars from 'express-handlebars';
 import helmet from 'helmet';
 import logger from 'morgan';
-import { StatusError } from './lib/errors';
+import { StatusError } from './errors';
 
 import homeRoutes from './routes/home';
 import registerRoutes from './routes/register';
@@ -21,6 +21,7 @@ app.locals.ENV_DEVELOPMENT = env == 'development';
 
 app.use(helmet());
 app.use(compression());
+app.use(express.urlencoded({ extended: false }));
 app.use(logger('dev'));
 
 app.engine('hbs', viewInstance.engine);
@@ -50,8 +51,7 @@ app.use(
 
     const status = err instanceof StatusError ? err.status : 500;
 
-    res.status(status);
-    res.send();
+    res.status(status).render('error');
   }
 );
 

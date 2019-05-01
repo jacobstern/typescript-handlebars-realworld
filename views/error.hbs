@@ -1,3 +1,7 @@
-{{ message }}
-{{ error.status }}
-{{ error.stack }}
+<div class="container">
+  <h1>Error: {{ message }}</h1>
+
+  <code>
+  {{ error.stack }}
+  </code>
+</div>
