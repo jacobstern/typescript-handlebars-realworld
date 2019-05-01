@@ -88,10 +88,10 @@ export class UserUpdatesForm extends UserFormBase {
   private __nominal: void;
 
   @IsOptional()
+  @IsUrl()
   public readonly image?: string;
 
   @IsOptional()
-  @IsUrl()
   public readonly bio?: string;
 
   private constructor() {

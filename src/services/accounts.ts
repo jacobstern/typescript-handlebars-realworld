@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt';
 import { getManager } from 'typeorm';
 import { User } from '../entities/User';
-import { UserForm } from '../forms/UserForm';
+import { UserForm, UserUpdatesForm } from '../forms/UserForm';
 
 async function hashPassword(password: string): Promise<string> {
   return bcrypt.hash(password, 10);
@@ -35,6 +35,15 @@ export async function findUserByUsername(
   return await getManager().findOne(User, { username });
 }
 
-export async function findUserById(id: number): Promise<User | undefined> {
+export async function findUser(id: number): Promise<User | undefined> {
   return await getManager().findOne(User, { id });
+}
+
+export async function updateUser(
+  id: number,
+  updates: UserUpdatesForm
+): Promise<void> {
+  if (Object.keys(updates).length > 0) {
+    await getManager().update(User, { id }, updates);
+  }
 }

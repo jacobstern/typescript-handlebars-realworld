@@ -1,9 +1,8 @@
-import express, { Request, Response } from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import { createUser } from '../services/accounts';
 import { UserForm } from '../forms/UserForm';
 import { MultiValidationError } from '../forms/MultiValidationError';
-import { collectErrorMessages } from '../collect-error-messages';
-import { NextFunction } from 'connect';
+import { collectErrorMessages } from '../utils/collect-error-messages';
 
 const router = express.Router();
 

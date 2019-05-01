@@ -7,15 +7,16 @@ import session from 'express-session';
 import expressHandlebars from 'express-handlebars';
 import helmet from 'helmet';
 import logger from 'morgan';
+import { TypeormStore } from 'typeorm-store';
+import { getConnection } from 'typeorm';
 import { StatusError } from './errors';
+import { findUserByUsername, findUser } from './services/accounts';
+import { User } from './entities/User';
+import { Session } from './entities/Session';
 
 import homeRoutes from './routes/home';
 import registerRoutes from './routes/register';
-import { findUserByUsername, findUserById } from './services/accounts';
-import { User } from './entities/User';
-import { TypeormStore } from 'typeorm-store';
-import { getConnection } from 'typeorm';
-import { Session } from './entities/Session';
+import settingsRoutes from './routes/settings';
 
 const viewInstance = expressHandlebars.create({
   defaultLayout: 'main.hbs',
@@ -43,7 +44,7 @@ passport.serializeUser<User, User['id']>((user, cb) => {
 });
 
 passport.deserializeUser<User, User['id']>((id, cb) => {
-  findUserById(id)
+  findUser(id)
     .then(user => {
       return cb(null, user);
     })
@@ -84,6 +85,7 @@ app.set('view engine', 'hbs');
 app.use('/', homeRoutes);
 app.use('/home', homeRoutes);
 app.use('/register', registerRoutes);
+app.use('/settings', settingsRoutes);
 
 app.use(
   (_req: Request, _res: Response, next: NextFunction): void => {
@@ -105,7 +107,7 @@ app.use(
 
     const status = err instanceof StatusError ? err.status : 500;
 
-    res.status(status).render('error');
+    res.status(status).render('error', { user: req.user });
   }
 );
 
