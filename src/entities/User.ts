@@ -1,5 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 import bcrypt from 'bcrypt';
+import { Article } from './Article';
 
 @Entity()
 export class User {
@@ -15,11 +16,14 @@ export class User {
   @Column()
   password: string;
 
-  @Column({ nullable: true })
-  bio?: string;
+  @Column('text', { nullable: true })
+  bio?: string | null;
 
-  @Column({ nullable: true })
-  image?: string;
+  @Column('text', { nullable: true })
+  image?: string | null;
+
+  @OneToMany(_type => Article, article => article.author)
+  articles?: Article[];
 
   public async checkPassword(password: string): Promise<boolean> {
     return bcrypt.compare(password, this.password);

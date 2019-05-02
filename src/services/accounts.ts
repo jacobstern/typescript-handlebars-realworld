@@ -2,6 +2,7 @@ import bcrypt from 'bcrypt';
 import { getManager } from 'typeorm';
 import { User } from '../entities/User';
 import { UserForm, UserUpdatesForm } from '../forms/UserForm';
+import { removeUndefined } from './remove-undefined';
 
 async function hashPassword(password: string): Promise<string> {
   return bcrypt.hash(password, 10);
@@ -47,8 +48,9 @@ export async function findUser(id: number): Promise<User | undefined> {
 
 export async function updateUser(
   id: number,
-  updates: UserUpdatesForm
+  form: UserUpdatesForm
 ): Promise<void> {
+  const updates = removeUndefined(form);
   if (Object.keys(updates).length > 0) {
     await getManager().update(User, { id }, updates);
   }

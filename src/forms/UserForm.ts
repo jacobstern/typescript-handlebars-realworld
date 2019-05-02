@@ -49,12 +49,10 @@ class EmailAvailableConstraint implements ValidatorConstraintInterface {
 }
 
 class UserFormBase {
-  @IsOptional()
   @MinLength(3)
   @Validate(UsernameAvailableConstraint)
   public readonly username?: string;
 
-  @IsOptional()
   @IsEmail()
   @Validate(EmailAvailableConstraint)
   public readonly email?: string;
@@ -86,6 +84,12 @@ export class UserForm extends UserFormBase {
 
 export class UserUpdatesForm extends UserFormBase {
   private __nominal: void;
+
+  @IsOptional()
+  public readonly username?: string;
+
+  @IsOptional()
+  public readonly email?: string;
 
   @IsOptional()
   @IsUrl()

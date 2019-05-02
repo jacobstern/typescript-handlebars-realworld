@@ -9,7 +9,7 @@
     "prebuild": "npm run clean",
     "build": "tsc",
     "dev": "node ./scripts/dev.js",
-    "repl": "node --experimental-repl-await -r ts-node/register",
+    "repl": "node --experimental-repl-await -r ts-node/register scripts/repl.js",
     "start": "ts-node src/server.ts",
     "typeorm": "ts-node ./node_modules/typeorm/cli.js"
   },
@@ -47,6 +47,8 @@
     "@types/node": "11.13.8",
     "@types/passport": "1.0.0",
     "@types/passport-local": "1.0.33",
+    "@types/shortid": "^0.0.29",
+    "@types/slug": "^0.9.1",
     "bcrypt": "^3.0.6",
     "class-validator": "^0.9.1",
     "compression": "^1.7.4",
@@ -64,6 +66,8 @@
     "passport-local": "^1.0.0",
     "pg": "^7.10.0",
     "reflect-metadata": "^0.1.10",
+    "shortid": "^2.2.14",
+    "slug": "^1.1.0",
     "typeorm": "0.2.16",
     "typeorm-store": "^1.2.0",
     "typescript": "^3.4.5"
