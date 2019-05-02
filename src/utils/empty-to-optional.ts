@@ -1,10 +1,14 @@
+export type EmptyToOptional<T> = {
+  [k in keyof T]: T[k] extends string ? T[k] | undefined : T[k]
+};
+
 /**
- * Drops all keys in `o` whose values are the empty string `''`.
+ * Sets properties in `o` whose values are the empty string `''` to `undefined`.
  *
  * @param o - An object
  * @returns An object without any properties that have the value `''`
  */
-export function emptyToOptional<T>(o: T): Partial<T> {
+export function emptyToOptional<T>(o: T): EmptyToOptional<T> {
   let ret: { [key: string]: unknown } = o;
   if (typeof o === 'object') {
     ret = {};
@@ -14,5 +18,5 @@ export function emptyToOptional<T>(o: T): Partial<T> {
       }
     }
   }
-  return ret as Partial<T>;
+  return ret as EmptyToOptional<T>;
 }

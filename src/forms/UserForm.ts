@@ -7,14 +7,15 @@ import {
   Validator,
   IsOptional,
   IsUrl,
+  ValidationArguments,
 } from 'class-validator';
 import { validateHelper } from './validate-helper';
 import { PlainObject } from './plain-object';
-import { isUsernameAvailable, isEmailAvailable } from '../services/accounts';
+import { findUserByUsername, findUserByEmail } from '../services/accounts';
 
 @ValidatorConstraint({ name: 'usernameAvailable', async: true })
 class UsernameAvailableConstraint implements ValidatorConstraintInterface {
-  async validate(value: unknown): Promise<boolean> {
+  async validate(value: unknown, args: ValidationArguments): Promise<boolean> {
     if (typeof value !== 'string') {
       return false;
     }
@@ -22,7 +23,15 @@ class UsernameAvailableConstraint implements ValidatorConstraintInterface {
       // Short-circuit if username is clearly not valid
       return true;
     }
-    return await isUsernameAvailable(value);
+    const found = await findUserByUsername(value);
+    if (found === undefined) {
+      return true;
+    }
+    const form = args.object;
+    if (form instanceof UserUpdatesForm) {
+      return found.id === form.getUserId();
+    }
+    return false;
   }
 
   defaultMessage() {
@@ -32,7 +41,7 @@ class UsernameAvailableConstraint implements ValidatorConstraintInterface {
 
 @ValidatorConstraint({ name: 'emailAvailable', async: true })
 class EmailAvailableConstraint implements ValidatorConstraintInterface {
-  async validate(value: unknown): Promise<boolean> {
+  async validate(value: unknown, args: ValidationArguments): Promise<boolean> {
     if (typeof value !== 'string') {
       return false;
     }
@@ -40,7 +49,15 @@ class EmailAvailableConstraint implements ValidatorConstraintInterface {
       // Validations don't short circuit, so just stop here if it's not a valid email
       return true;
     }
-    return await isEmailAvailable(value);
+    const found = await findUserByEmail(value);
+    if (found === undefined) {
+      return true;
+    }
+    const form = args.object;
+    if (form instanceof UserUpdatesForm) {
+      return found.id === form.getUserId();
+    }
+    return false;
   }
 
   defaultMessage() {
@@ -85,6 +102,12 @@ export class UserForm extends UserFormBase {
 export class UserUpdatesForm extends UserFormBase {
   private __nominal: void;
 
+  private userId: number;
+
+  public getUserId(): number {
+    return this.userId;
+  }
+
   @IsOptional()
   public readonly username?: string;
 
@@ -98,13 +121,15 @@ export class UserUpdatesForm extends UserFormBase {
   @IsOptional()
   public readonly bio?: string;
 
-  private constructor() {
+  private constructor(userId: number) {
     super();
+    this.userId = userId;
   }
 
   public static async validate(
+    userId: number,
     form: PlainObject<UserUpdatesForm>
   ): Promise<UserUpdatesForm> {
-    return validateHelper(new UserUpdatesForm(), form);
+    return validateHelper(new UserUpdatesForm(userId), form);
   }
 }
