@@ -24,8 +24,8 @@ export class Article {
   @Column()
   body: string;
 
-  @Column('text', { array: true })
-  tags: string[];
+  @Column('text', { array: true, name: 'tags' })
+  tagList: string[];
 
   @Column({ unique: true })
   slug: string;

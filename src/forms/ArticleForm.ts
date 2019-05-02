@@ -16,7 +16,7 @@ export class ArticleForm {
 
   @IsOptional()
   @IsNotEmpty({ each: true })
-  public readonly tags?: string[];
+  public readonly tagList?: string[];
 
   private constructor() {}
 

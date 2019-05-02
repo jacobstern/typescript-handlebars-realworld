@@ -23,9 +23,9 @@
             <fieldset class="form-group">
               <input type="text" class="form-control" placeholder="Enter tags" id="tag-input">
               <div class="tag-list" id="tag-list">
-                {{#each article.tags}}
+                {{#each article.tagList}}
                   <span class="tag-default tag-pill">
-                    <input type="hidden" name="tags[]" value="{{this}}">
+                    <input type="hidden" name="tagList[]" value="{{this}}">
                     <i class="ion-close-round"></i>
                     {{this}}
                   </span>

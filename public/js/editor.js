@@ -17,7 +17,7 @@
     icon.className = 'ion-close-round';
     var input = document.createElement('input');
     input.type = 'hidden';
-    input.name = 'tags[]';
+    input.name = 'tagList[]';
     input.value = tagName;
     tag.appendChild(input);
     tag.appendChild(icon);

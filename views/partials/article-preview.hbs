@@ -11,8 +11,8 @@
       <a href="/profile/{{author.username}}" class="author">{{author.username}}</a>
       <span class="date">{{dateString createdAt}}</span>
     </div>
-    <button class="btn btn-outline-primary btn-sm pull-xs-right">
-      <i class="ion-heart"></i> {{favorites}}
+    <button class="btn btn-outline-primary btn-sm pull-xs-right" {{#unless user}}disabled{{/unless}}>
+      <i class="ion-heart"></i> {{favoritesCount}}
     </button>
   </div>
   <a href="/article/{{slug}}" class="preview-link">

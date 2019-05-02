@@ -35,7 +35,7 @@
         </div>
 
         {{#each articles}}
-          {{>article-preview}}
+          {{>article-preview user=../user}}
         {{else}}
           <div class="article-preview">No articles are here... yet.</div>
         {{/each}}

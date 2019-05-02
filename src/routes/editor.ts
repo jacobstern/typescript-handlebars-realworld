@@ -22,9 +22,7 @@ router.get('/', ensureLoggedIn(), (req: Request, res: Response) => {
 });
 
 router.get('/:slug', ensureLoggedIn(), async (req: Request, res: Response) => {
-  const article = await findArticleBySlug(req.params.slug, {
-    relations: ['author'],
-  });
+  const article = await findArticleBySlug(req.params.slug);
   if (article === undefined) {
     throw new StatusError('Article Not Found', 404);
   }
@@ -59,9 +57,7 @@ router.post('/', ensureLoggedIn(), async (req: Request, res: Response) => {
 });
 
 router.post('/:slug', ensureLoggedIn(), async (req: Request, res: Response) => {
-  const article = await findArticleBySlug(req.params.slug, {
-    relations: ['author'],
-  });
+  const article = await findArticleBySlug(req.params.slug);
   if (article === undefined) {
     throw new StatusError('Article Not Found', 404);
   }

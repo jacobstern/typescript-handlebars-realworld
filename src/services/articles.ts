@@ -21,7 +21,7 @@ export async function createArticle(
     title: form.title,
     description: form.description,
     body: form.body,
-    tags: form.tags || [],
+    tagList: form.tagList || [],
     slug: generateSlug(form.title),
   });
   newArticle.author = user;
@@ -42,7 +42,7 @@ export async function updateArticle(
     title: form.title,
     description: form.description,
     body: form.body,
-    tags: form.tags || [],
+    tagList: form.tagList || [],
   });
   if (updates.title !== undefined) {
     updates.slug = generateSlug(updates.title);
