@@ -1,5 +1,6 @@
 import compression from 'compression';
 import cookieParser from 'cookie-parser';
+import path from 'path';
 import express, { NextFunction, Request, Response } from 'express';
 import passport from 'passport';
 import { Strategy as PassportLocalStrategy } from 'passport-local';
@@ -19,6 +20,7 @@ import homeRoutes from './routes/home';
 import loginRoutes from './routes/login';
 import registerRoutes from './routes/register';
 import settingsRoutes from './routes/settings';
+import editorRoutes from './routes/editor';
 
 const viewInstance = expressHandlebars.create({
   defaultLayout: 'main.hbs',
@@ -73,11 +75,12 @@ app.locals.ENV_DEVELOPMENT = env == 'development';
 
 app.use(helmet());
 app.use(compression());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
 app.use(logger('dev'));
 app.use(cookieParser());
 app.use(flash());
 app.use(sessionMiddleware);
+app.use(express.static(path.resolve(__dirname, '../public')));
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -90,6 +93,7 @@ app.use('/home', homeRoutes);
 app.use('/login', loginRoutes);
 app.use('/register', registerRoutes);
 app.use('/settings', settingsRoutes);
+app.use('/editor', editorRoutes);
 
 app.use(
   (_req: Request, _res: Response, next: NextFunction): void => {

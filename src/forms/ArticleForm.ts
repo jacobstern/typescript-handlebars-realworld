@@ -1,4 +1,4 @@
-import { IsNotEmpty, NotContains } from 'class-validator';
+import { IsNotEmpty, IsOptional } from 'class-validator';
 import { PlainObject } from './plain-object';
 import { validateHelper } from './validate-helper';
 
@@ -14,9 +14,9 @@ export class ArticleForm {
   @IsNotEmpty()
   public readonly body: string;
 
-  @NotContains(',', { each: true })
+  @IsOptional()
   @IsNotEmpty({ each: true })
-  public readonly tags: string[];
+  public readonly tags?: string[];
 
   private constructor() {}
 

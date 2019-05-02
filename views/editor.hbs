@@ -1,0 +1,45 @@
+<div class="editor-page">
+  <div class="container page">
+    <div class="row">
+
+      <div class="col-md-10 offset-md-1 col-xs-12">
+        {{#if errorMessages}}
+          <ul class="error-messages">
+            {{#each errorMessages}}<li>{{this}}</li>{{/each}}
+          </ul>
+        {{/if}}
+
+        <form action="" method="POST" id="article-form">
+          <fieldset>
+            <fieldset class="form-group">
+              <input type="text" class="form-control form-control-lg" placeholder="Article Title" name="title" value="{{article.title}}">
+            </fieldset>
+            <fieldset class="form-group">
+              <input type="text" class="form-control" placeholder="What's this article about?" name="description" value="{{article.description}}">
+            </fieldset>
+            <fieldset class="form-group">
+              <textarea class="form-control" rows="8" placeholder="Write your article (in markdown)" name="body" value="{{article.body}}"></textarea>
+            </fieldset>
+            <fieldset class="form-group">
+              <input type="text" class="form-control" placeholder="Enter tags" id="tag-input">
+              <div class="tag-list" id="tag-list">
+                {{#each article.tags}}
+                  <span class="tag-default tag-pill">
+                    <input type="hidden" name="tags[]" value="{{this}}">
+                    <i class="ion-close-round"></i>
+                  </span>
+                {{/each}}
+              </div>
+            </fieldset>
+            <button class="btn btn-lg pull-xs-right btn-primary" type="submit">
+              Publish Article
+            </button>
+          </fieldset>
+        </form>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript" src="/js/editor.js"></script>

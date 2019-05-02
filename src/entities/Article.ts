@@ -5,10 +5,12 @@ import {
   UpdateDateColumn,
   CreateDateColumn,
   ManyToOne,
+  Index,
 } from 'typeorm';
 import { User } from './User';
 
 @Entity()
+@Index('article_tags_index', { synchronize: false }) // GIN index managed in migrations
 export class Article {
   @PrimaryGeneratedColumn()
   id: number;
@@ -22,7 +24,7 @@ export class Article {
   @Column()
   body: string;
 
-  @Column('simple-array')
+  @Column('text', { array: true, default: '{}' })
   tags: string[];
 
   @Column({ unique: true })

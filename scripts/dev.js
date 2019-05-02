@@ -4,7 +4,10 @@ const livereload = require('livereload');
 
 async function main() {
   const rootDir = path.resolve(__dirname, '..');
-  const livereloadServer = livereload.createServer({ exts: ['hbs'] });
+  const livereloadServer = livereload.createServer({
+    exts: ['hbs', 'js'],
+    exclusions: ['build/', 'scripts/', '.git/', 'node_modules/'],
+  });
   livereloadServer.watch(rootDir);
 
   const tsNodeDev = spawn(
