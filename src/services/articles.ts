@@ -9,7 +9,7 @@ import { getEntityUpdates } from './get-entity-updates';
 import { assertType } from '../utils/assert-type';
 
 function generateSlug(title: string): string {
-  return [shortid.generate(), slug(title)].join('-');
+  return [slug(title), shortid.generate()].join('-');
 }
 
 export async function createArticle(
@@ -32,6 +32,10 @@ export async function findArticleBySlug(
   slug: string
 ): Promise<Article | undefined> {
   return await getManager().findOne(Article, { slug });
+}
+
+export async function deleteArticle(article: Article): Promise<void> {
+  await getManager().remove(article);
 }
 
 export async function updateArticle(

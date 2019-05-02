@@ -15,13 +15,14 @@ import { StatusError } from './errors';
 import { findUser, findUserByEmail } from './services/accounts';
 import { User } from './entities/User';
 import { Session } from './entities/Session';
+import { configureHandlebars } from './handlebars-instance';
 
 import homeRoutes from './routes/home';
 import loginRoutes from './routes/login';
 import registerRoutes from './routes/register';
 import settingsRoutes from './routes/settings';
 import editorRoutes from './routes/editor';
-import { configureHandlebars } from './handlebars-instance';
+import articleRoutes from './routes/article';
 
 const viewInstance = expressHandlebars.create({
   defaultLayout: 'main.hbs',
@@ -96,6 +97,7 @@ app.use('/login', loginRoutes);
 app.use('/register', registerRoutes);
 app.use('/settings', settingsRoutes);
 app.use('/editor', editorRoutes);
+app.use('/article', articleRoutes);
 
 app.use(
   (_req: Request, _res: Response, next: NextFunction): void => {

@@ -1,16 +1,6 @@
 <div class="article-preview">
   <div class="article-meta">
-    <a href="/profile/{{author.username}}">
-      {{#if author.image}}
-      <img src="{{author.image}}" />
-      {{else}}
-      <img src="https://static.productionready.io/images/smiley-cyrus.jpg" />
-      {{/if}}
-    </a>
-    <div class="info">
-      <a href="/profile/{{author.username}}" class="author">{{author.username}}</a>
-      <span class="date">{{dateString createdAt}}</span>
-    </div>
+    {{>article-author-widget}}
     <button class="btn btn-outline-primary btn-sm pull-xs-right" {{#unless user}}disabled{{/unless}}>
       <i class="ion-heart"></i> {{favoritesCount}}
     </button>

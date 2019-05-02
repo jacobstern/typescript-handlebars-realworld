@@ -1,0 +1,11 @@
+<a href="{{authorProfileURL author}}">
+  {{#if author.image}}
+  <img src="{{author.image}}" />
+  {{else}}
+  <img src="https://static.productionready.io/images/smiley-cyrus.jpg" />
+  {{/if}}
+</a>
+<div class="info">
+  <a href="{{authorProfileURL author}}" class="author">{{author.username}}</a>
+  <span class="date">{{dateString createdAt}}</span>
+</div>

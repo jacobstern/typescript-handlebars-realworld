@@ -26,7 +26,7 @@ router.get('/:slug', ensureLoggedIn(), async (req: Request, res: Response) => {
   if (article === undefined) {
     throw new StatusError('Article Not Found', 404);
   }
-  if (article.author === undefined || req.user.id !== article.author.id) {
+  if (req.user.id !== article.author.id) {
     throw new StatusError('Forbidden', 403);
   }
   res.render('editor', {
@@ -61,7 +61,7 @@ router.post('/:slug', ensureLoggedIn(), async (req: Request, res: Response) => {
   if (article === undefined) {
     throw new StatusError('Article Not Found', 404);
   }
-  if (article.author === undefined || req.user.id !== article.author.id) {
+  if (req.user.id !== article.author.id) {
     throw new StatusError('Forbidden', 403);
   }
   try {
