@@ -38,14 +38,14 @@
   dependencies:
     "@types/express" "*"
 
-"@types/connect-ensure-login@^0.1.4":
+"@types/connect-ensure-login@0.1.4":
   version "0.1.4"
   resolved "https://registry.yarnpkg.com/@types/connect-ensure-login/-/connect-ensure-login-0.1.4.tgz#6bfb5d5a3a273b08c15ceb00620ab14f8bf06244"
   integrity sha512-MLXOS6+5MnhkB7F34xE66wX9MEEfrUJRfNM9Uv0vEre8kH13tILO9j2b7fI4xwyLXSEn9k3uIE8U46MQ1CWByw==
   dependencies:
     "@types/express" "*"
 
-"@types/connect-flash@^0.0.34":
+"@types/connect-flash@0.0.34":
   version "0.0.34"
   resolved "https://registry.yarnpkg.com/@types/connect-flash/-/connect-flash-0.0.34.tgz#ec7323d1636bc8d9b7c02c3a0a5d337602b671f9"
   integrity sha512-QC93TwnTZ0sk//bfT81o7U4GOedbOZAcgvqi0v1vJqCESC8tqIVnhzB1CHiAUBUWFjoxG5JQF0TYaNa6DMb6Ig==
@@ -59,7 +59,7 @@
   dependencies:
     "@types/node" "*"
 
-"@types/cookie-parser@^1.4.1":
+"@types/cookie-parser@1.4.1":
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/@types/cookie-parser/-/cookie-parser-1.4.1.tgz#e88a39c41960f31549b4c52dd8620aa4a2feb4bb"
   integrity sha512-iJY6B3ZGufLiDf2OCAgiAAQuj1sMKC/wz/7XCEjZ+/MDuultfFJuSwrBKcLSmJ5iYApLzCCYBYJZs0Ws8GPmwA==
@@ -157,12 +157,12 @@
     "@types/express-serve-static-core" "*"
     "@types/mime" "*"
 
-"@types/shortid@^0.0.29":
+"@types/shortid@0.0.29":
   version "0.0.29"
   resolved "https://registry.yarnpkg.com/@types/shortid/-/shortid-0.0.29.tgz#8093ee0416a6e2bf2aa6338109114b3fbffa0e9b"
   integrity sha1-gJPuBBam4r8qpjOBCRFLP7/6Dps=
 
-"@types/slug@^0.9.1":
+"@types/slug@0.9.1":
   version "0.9.1"
   resolved "https://registry.yarnpkg.com/@types/slug/-/slug-0.9.1.tgz#16dbf8b77d73e0a09ce51a96400878f33806ab32"
   integrity sha512-zR/u8WFQ4/6uCIikjI00a5uB084XjgEGNRAvM4a1BL39Bw9yEiDQFiPS2DgJ8lPDkR2Qd/vZ26dCR9XqlKbDqQ==
@@ -1417,6 +1417,11 @@ forwarded@~0.1.2:
   resolved "https://registry.yarnpkg.com/forwarded/-/forwarded-0.1.2.tgz#98c23dab1175657b8c0573e8ceccd91b0ff18c84"
   integrity sha1-mMI9qxF1ZXuMBXPozszZGw/xjIQ=
 
+fp-ts@^1.0.0:
+  version "1.17.2"
+  resolved "https://registry.yarnpkg.com/fp-ts/-/fp-ts-1.17.2.tgz#d8ab44a535ea53aad0623b289c15fad7e1f00e54"
+  integrity sha512-8Ldcoj8IkYuOqINRcGeSI3JoatMM1A6rg2n4tn5jgaV7nwcX45UNOkFMhMpboEz4b+C+HKcc2tqOUmdu/hIBNw==
+
 fragment-cache@^0.2.1:
   version "0.2.1"
   resolved "https://registry.yarnpkg.com/fragment-cache/-/fragment-cache-0.2.1.tgz#4290fad27f13e89be7f33799c6bc5a0abfff0d19"
@@ -1806,6 +1811,13 @@ invert-kv@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/invert-kv/-/invert-kv-2.0.0.tgz#7393f5afa59ec9ff5f67a27620d11c226e3eec02"
   integrity sha512-wPVv/y/QQ/Uiirj/vh3oP+1Ww+AWehmi1g5fFWGPF6IpCBCDVrhgHRMvrLfdYcwDh3QJbGXDW4JAuzxElLSqKA==
+
+io-ts@^1.8.5:
+  version "1.8.5"
+  resolved "https://registry.yarnpkg.com/io-ts/-/io-ts-1.8.5.tgz#2e102f7f518abe17b0f7e7ede0db54a4c4ddc188"
+  integrity sha512-4HzDeg7mTygFjFIKh7ajBSanoVaFryYSFI0ocdwndSWl3eWQXhg3wVR0WI+Li5Vq11TIsoIngQszVbN4dy//9A==
+  dependencies:
+    fp-ts "^1.0.0"
 
 ipaddr.js@1.9.0:
   version "1.9.0"
