@@ -83,6 +83,7 @@ export interface ListArticlesOptions {
   offset?: number;
   limit?: number;
   tag?: string;
+  author?: User;
 }
 
 export async function listArticles(
@@ -92,6 +93,9 @@ export async function listArticles(
   const query = createQueryBuilder(Article, 'article');
   if (options.tag) {
     query.where('article.tags @> ARRAY [:tag]', { tag: options.tag });
+  }
+  if (options.author) {
+    query.where({ author: options.author });
   }
   const [articles, count] = await query
     .leftJoinAndSelect('article.author', 'author')

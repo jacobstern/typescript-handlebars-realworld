@@ -2,7 +2,6 @@ import bcrypt from 'bcrypt';
 import { getManager } from 'typeorm';
 import { User } from '../entities/User';
 import { UserForm, UserUpdatesForm } from '../forms/UserForm';
-import { removeUndefined } from './remove-undefined';
 import { getEntityUpdates } from './get-entity-updates';
 
 async function hashPassword(password: string): Promise<string> {
@@ -51,7 +50,7 @@ export async function updateUser(
   user: User,
   form: UserUpdatesForm
 ): Promise<void> {
-  const updates = getEntityUpdates(user, removeUndefined(form));
+  const updates = getEntityUpdates(user, form);
   const manager = getManager();
   const updated = manager.merge(User, user, updates);
   await manager.save(updated);

@@ -13,11 +13,13 @@
       <div class="col-md-9">
         <div class="feed-toggle">
           <ul class="nav nav-pills outline-active">
-            <li class="nav-item">
-              <a class="nav-link {{#unless user}}disabled{{/unless}}" href="/home?filter=following">
-                Your Feed
-              </a>
-            </li>
+            {{#if user}}
+              <li class="nav-item">
+                <a class="nav-link {{#if yourFeed}}active{{/if}}" href="/home?filter=following">
+                  Your Feed
+                </a>
+              </li>
+            {{/if}}
             <li class="nav-item">
               <a class="nav-link {{#if globalFeed}}active{{/if}}" href="/home?filter=global">
                 Global Feed

@@ -9,5 +9,12 @@
     <h1>{{title}}</h1>
     <p>{{description}}</p>
     <span>Read more...</span>
+    {{#if tagList}}
+      <ul class="tag-list">
+      {{#each tagList}}
+        <li class="tag-default tag-pill tag-outline">{{this}}</li>
+      {{/each}}
+      </ul>
+    {{/if}}
   </a>
 </div>

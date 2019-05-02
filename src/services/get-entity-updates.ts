@@ -2,7 +2,7 @@ import deepEqual from 'fast-deep-equal';
 
 /**
  * Returns a subset of `r`, a hash of updates to `l`, such that those updates
- * are different from their corresponding values in `l`.
+ * are not `undefined` and are different from their corresponding values in `l`.
  *
  * Example:
  * ```ts
@@ -23,7 +23,7 @@ export function getEntityUpdates<T>(l: T, r: Partial<T>): Partial<T> {
     ret = {};
     const compare = l as { [key: string]: unknown };
     for (const [key, value] of Object.entries(r)) {
-      if (!deepEqual(value, compare[key])) {
+      if (value !== undefined && !deepEqual(value, compare[key])) {
         ret[key] = value;
       }
     }

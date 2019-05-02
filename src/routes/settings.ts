@@ -23,7 +23,7 @@ router.post('/', ensureLoggedIn(), async (req: Request, res: Response) => {
     const updates = emptyToOptional(req.body);
     const form = await UserUpdatesForm.validate(user.id, updates);
     await updateUser(user, form);
-    res.redirect('/profile');
+    res.redirect(`/profile/${encodeURIComponent(user.username)}`);
   } catch (e) {
     if (e instanceof MultiValidationError) {
       res.render('settings', {

@@ -23,6 +23,7 @@ import registerRoutes from './routes/register';
 import settingsRoutes from './routes/settings';
 import editorRoutes from './routes/editor';
 import articleRoutes from './routes/article';
+import profileRoutes from './routes/profile';
 
 const viewInstance = expressHandlebars.create({
   defaultLayout: 'main.hbs',
@@ -98,6 +99,7 @@ app.use('/register', registerRoutes);
 app.use('/settings', settingsRoutes);
 app.use('/editor', editorRoutes);
 app.use('/article', articleRoutes);
+app.use('/profile', profileRoutes);
 
 app.use(
   (_req: Request, _res: Response, next: NextFunction): void => {
