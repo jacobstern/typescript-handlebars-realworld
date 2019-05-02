@@ -78,6 +78,7 @@ export interface ListArticlesResult {
 export interface ListArticlesOptions {
   offset?: number;
   limit?: number;
+  tag?: string;
 }
 
 export async function listArticles(
@@ -85,6 +86,9 @@ export async function listArticles(
 ): Promise<ListArticlesResult> {
   const { offset = 0, limit = 20 } = options;
   const query = createQueryBuilder(Article, 'article');
+  if (options.tag) {
+    query.where('article.tags @> ARRAY [:tag]', { tag: options.tag });
+  }
   const [articles, count] = await query
     .leftJoinAndSelect('article.author', 'author')
     .offset(offset)

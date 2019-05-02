@@ -14,16 +14,30 @@
         <div class="feed-toggle">
           <ul class="nav nav-pills outline-active">
             <li class="nav-item">
-              <a class="nav-link disabled" href="">Your Feed</a>
+              <a class="nav-link {{#unless user}}disabled{{/unless}}" href="/home?filter=following">
+                Your Feed
+              </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link active" href="">Global Feed</a>
+              <a class="nav-link {{#if globalFeed}}active{{/if}}" href="/home?filter=global">
+                Global Feed
+              </a>
             </li>
+            {{#if tag}}
+              <li class="nav-item">
+                <a class="nav-link active" href="{{homepageTagURL tag}}">
+                  <i class="ion-pound"></i>
+                  {{tag}}
+                </a>
+              </li>
+            {{/if}}
           </ul>
         </div>
 
         {{#each articles}}
           {{>article-preview}}
+        {{else}}
+          <div class="article-preview">No articles are here... yet.</div>
         {{/each}}
       </div>
   
