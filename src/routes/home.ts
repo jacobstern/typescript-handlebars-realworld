@@ -1,18 +1,18 @@
 import express, { Request, Response } from 'express';
-import { listPopularTags } from '../services/articles';
+import { listPopularTags, listArticles } from '../services/articles';
 
 const router = express.Router();
 
 router.get('/', async (req: Request, res: Response) => {
   const popularTags = await listPopularTags();
+  const { articles, count: articlesCount } = await listArticles();
+
   res.render('home', {
     title: 'Home',
     nav: { home: true },
     user: req.user,
-    popularTags: popularTags.map(tag => ({
-      tagName: tag,
-      url: `/home?tag=${encodeURIComponent(tag)}`,
-    })),
+    popularTags,
+    articles,
   });
 });
 

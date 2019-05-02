@@ -21,10 +21,12 @@ import loginRoutes from './routes/login';
 import registerRoutes from './routes/register';
 import settingsRoutes from './routes/settings';
 import editorRoutes from './routes/editor';
+import { configureHandlebars } from './handlebars-instance';
 
 const viewInstance = expressHandlebars.create({
   defaultLayout: 'main.hbs',
   extname: '.hbs',
+  handlebars: configureHandlebars(),
 });
 
 passport.use(

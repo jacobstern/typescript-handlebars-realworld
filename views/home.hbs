@@ -11,6 +11,20 @@
     <div class="row">
 
       <div class="col-md-9">
+        <div class="feed-toggle">
+          <ul class="nav nav-pills outline-active">
+            <li class="nav-item">
+              <a class="nav-link disabled" href="">Your Feed</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active" href="">Global Feed</a>
+            </li>
+          </ul>
+        </div>
+
+        {{#each articles}}
+          {{>article-preview}}
+        {{/each}}
       </div>
   
       <div class="col-md-3">
@@ -19,8 +33,8 @@
 
           <div class="tag-list">
             {{#each popularTags}}
-              <a href="{{url}}" class="tag-pill tag-default">
-                {{tagName}}
+              <a href="{{homepageTagURL this}}" class="tag-pill tag-default">
+                {{this}}
               </a>
             {{/each}}
           </div>
