@@ -8,6 +8,10 @@ import { User } from '../entities/User';
 import { getEntityUpdates } from './get-entity-updates';
 import { assertType } from '../utils/assert-type';
 
+// Use + character instead of - for generated slugs
+// prettier-ignore
+shortid.characters('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ+_');
+
 function generateSlug(title: string): string {
   return [slug(title), shortid.generate()].join('-');
 }
@@ -98,11 +102,39 @@ export async function listArticles(
     query.where({ author: options.author });
   }
   const [articles, count] = await query
-    .leftJoinAndSelect('article.author', 'author')
+    .innerJoinAndSelect('article.author', 'author')
     .offset(offset)
     .limit(limit)
     .orderBy('article.createdAt', 'DESC')
     .getManyAndCount();
+  return {
+    count,
+    articles,
+  };
+}
+
+export interface ListArticlesFeedOptions {
+  offset?: number;
+  limit?: number;
+}
+
+export async function listArticlesFeed(
+  user: User,
+  options: ListArticlesFeedOptions = {}
+): Promise<ListArticlesResult> {
+  const { offset = 0, limit = 20 } = options;
+  const query = createQueryBuilder(Article, 'article')
+    .innerJoinAndSelect('article.author', 'author')
+    .innerJoin(
+      'user_following_user',
+      'following',
+      'following.userId_1 = :userId AND following.userId_2 = author.id',
+      { userId: user.id }
+    )
+    .offset(offset)
+    .limit(limit)
+    .orderBy('article.createdAt', 'DESC');
+  const [articles, count] = await query.getManyAndCount();
   return {
     count,
     articles,

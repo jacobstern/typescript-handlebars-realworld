@@ -16,17 +16,31 @@
             {{profile.bio}}
           </p>
 
-          {{#if isOwnProfile}}
+          {{#if userProfile}}
             <a class="btn btn-sm btn-outline-secondary action-btn" href="/settings">
               <i class="ion-gear-a"></i>
               Edit Profile Settings
             </a>
           {{else}}
-            <button class="btn btn-sm btn-outline-secondary action-btn">
-              <i class="ion-plus-round"></i>
-              &nbsp;
-              Follow {{profile.username}}
-            </button>
+            <form
+              id="follow-form" action="/profile/{{uc profile.username}}/follow?redirect={{uc postRedirect}}"
+              method="POST" style="visibility: collapse">
+            </form>
+            {{#if profile.following}}
+              <button
+                class="btn btn-sm btn-outline-secondary action-btn" form="follow-form"
+                formaction="/profile/{{uc profile.username}}/unfollow?redirect={{uc postRedirect}}">
+                <i class="ion-close"></i>
+                &nbsp;
+                Unfollow {{profile.username}}
+              </button>
+            {{else}}
+              <button class="btn btn-sm btn-outline-secondary action-btn" form="follow-form">
+                <i class="ion-plus-round"></i>
+                &nbsp;
+                Follow {{profile.username}}
+              </button>
+            {{/if}}
           {{/if}}
         </div>
 
@@ -41,12 +55,12 @@
         <div class="articles-toggle">
           <ul class="nav nav-pills outline-active">
             <li class="nav-item">
-              <a class="nav-link {{#if myArticles}}active{{/if}}" href="{{profileURL profile filter='mine'}}">
+              <a class="nav-link {{#if filter.mine}}active{{/if}}" href="{{profileURL profile filter='mine'}}">
                 My Articles
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link {{#if favoritedArticles}}active{{/if}}" href="{{profileURL profile filter='favorited'}}">
+              <a class="nav-link {{#if filter.favorited}}active{{/if}}" href="{{profileURL profile filter='favorited'}}">
                 Favorited Articles
               </a>
             </li>

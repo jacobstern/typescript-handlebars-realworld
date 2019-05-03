@@ -36,6 +36,9 @@ export class Article {
   @UpdateDateColumn({ type: 'timestamp' })
   updatedAt: Date;
 
-  @ManyToOne(_type => User, user => user.articles, { eager: true })
+  @ManyToOne(_type => User, user => user.articles, {
+    eager: true,
+    nullable: false,
+  })
   author: User;
 }

@@ -15,13 +15,13 @@
           <ul class="nav nav-pills outline-active">
             {{#if user}}
               <li class="nav-item">
-                <a class="nav-link {{#if yourFeed}}active{{/if}}" href="/home?filter=following">
+                <a class="nav-link {{#if filter.following}}active{{/if}}" href="/home?filter=following">
                   Your Feed
                 </a>
               </li>
             {{/if}}
             <li class="nav-item">
-              <a class="nav-link {{#if globalFeed}}active{{/if}}" href="/home?filter=global">
+              <a class="nav-link {{#if filter.global}}active{{/if}}" href="/home?filter=global">
                 Global Feed
               </a>
             </li>

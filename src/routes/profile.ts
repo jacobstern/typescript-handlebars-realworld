@@ -1,29 +1,71 @@
 import express, { Request, Response } from 'express';
-import * as t from 'io-ts';
-import { findUserByUsername } from '../services/accounts';
+import {
+  findUserByUsername,
+  followUser,
+  unfollowUser,
+} from '../services/accounts';
 import { StatusError } from '../errors';
 import { listArticles, ListArticlesOptions } from '../services/articles';
-import { assertType } from '../utils/assert-type';
+import { User } from '../entities/User';
+import { ensureLoggedIn } from 'connect-ensure-login';
 
 const router = express.Router();
 
-const QueryParamsType = t.partial({
-  filter: t.string,
-});
-
 type Filter = 'mine' | 'favorited';
 
+router.post(
+  '/:username/follow',
+  ensureLoggedIn(),
+  async (req: Request, res: Response) => {
+    const user = req.user as User;
+    const userToFollow = await findUserByUsername(req.params.username);
+
+    if (userToFollow === undefined) {
+      throw new StatusError('User Not Found', 404);
+    }
+
+    await followUser(user, userToFollow);
+
+    if (req.query.redirect) {
+      res.redirect(req.query.redirect);
+    } else {
+      res.redirect(`/profile/${encodeURIComponent(userToFollow.username)}`);
+    }
+  }
+);
+
+router.post(
+  '/:username/unfollow',
+  ensureLoggedIn(),
+  async (req: Request, res: Response) => {
+    const user = req.user as User;
+    const userToUnfollow = await findUserByUsername(req.params.username);
+
+    if (userToUnfollow === undefined) {
+      throw new StatusError('User Not Found', 404);
+    }
+
+    await unfollowUser(user, userToUnfollow);
+
+    if (req.query.redirect) {
+      res.redirect(req.query.redirect);
+    } else {
+      res.redirect(`/profile/${encodeURIComponent(userToUnfollow.username)}`);
+    }
+  }
+);
+
 router.get('/:username', async (req: Request, res: Response) => {
+  const user = req.user as User | undefined;
   const profile = await findUserByUsername(req.params.username);
+
   if (profile === undefined) {
     throw new StatusError('User Not Found', 404);
   }
 
-  const queryParams = assertType(QueryParamsType, req.query);
-
   let filter: Filter = 'mine';
 
-  if (queryParams.filter === 'favorited') {
+  if (req.query.filter === 'favorited') {
     filter = 'favorited';
   }
 
@@ -36,16 +78,27 @@ router.get('/:username', async (req: Request, res: Response) => {
 
   const { articles } = await listArticles(listArticlesOptions);
 
-  const isOwnProfile = req.user && req.user.id === profile.id;
+  let userProfile = false;
+  let following = false;
+
+  if (user) {
+    userProfile = user.id === profile.id;
+    if (!userProfile) {
+      following = (await user.following).some(user => user.id === profile.id);
+    }
+  }
+
+  const filterHash: Record<string, boolean> = {};
+  filterHash[filter] = true;
 
   res.render('profile', {
-    user: req.user,
-    profile,
-    nav: { userProfile: isOwnProfile },
-    isOwnProfile,
+    user,
+    profile: { ...profile, following },
+    nav: { userProfile },
+    userProfile,
     articles,
-    myArticles: filter === 'mine',
-    favoritedArticles: filter === 'favorited',
+    filter: filterHash,
+    postRedirect: req.originalUrl,
   });
 });
 

@@ -1,4 +1,12 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  OneToMany,
+  ManyToMany,
+  JoinTable,
+  getManager,
+} from 'typeorm';
 import bcrypt from 'bcrypt';
 import { Article } from './Article';
 
@@ -23,7 +31,14 @@ export class User {
   image?: string | null;
 
   @OneToMany(_type => Article, article => article.author)
-  articles?: Article[];
+  articles: Promise<Article[]>;
+
+  @ManyToMany(_type => User, user => user.following)
+  followers: Promise<User[]>;
+
+  @ManyToMany(_type => User, user => user.followers)
+  @JoinTable()
+  following: Promise<User[]>;
 
   public async checkPassword(password: string): Promise<boolean> {
     return bcrypt.compare(password, this.password);

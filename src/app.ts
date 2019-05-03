@@ -1,7 +1,12 @@
 import compression from 'compression';
 import cookieParser from 'cookie-parser';
 import path from 'path';
-import express, { NextFunction, Request, Response } from 'express';
+import express, {
+  NextFunction,
+  Request,
+  Response,
+  RequestHandler,
+} from 'express';
 import passport from 'passport';
 import { Strategy as PassportLocalStrategy } from 'passport-local';
 import session from 'express-session';
@@ -17,14 +22,7 @@ import { findUser, findUserByEmail } from './services/accounts';
 import { User } from './entities/User';
 import { Session } from './entities/Session';
 import { configureHandlebars } from './handlebars-instance';
-
-import homeRoutes from './routes/home';
-import loginRoutes from './routes/login';
-import registerRoutes from './routes/register';
-import settingsRoutes from './routes/settings';
-import editorRoutes from './routes/editor';
-import articleRoutes from './routes/article';
-import profileRoutes from './routes/profile';
+import routes from './routes';
 
 const viewInstance = expressHandlebars.create({
   defaultLayout: 'main.hbs',
@@ -60,17 +58,24 @@ passport.deserializeUser<User, User['id']>((id, cb) => {
     .catch(cb);
 });
 
-const sessionMiddleware = session({
-  secret: 'keyboard cat',
-  resave: false,
-  saveUninitialized: false,
-  cookie: {
-    maxAge: 30 * 24 * 60 * 60 * 1000,
-  },
-  store: new TypeormStore({
-    repository: getConnection().getRepository(Session),
-  }),
-});
+let sessionInstance: RequestHandler | undefined;
+const sessionMiddleware = (req: Request, res: Response, next: NextFunction) => {
+  // Lazy initialize middleware since it requires an active TypeORM connection
+  if (sessionInstance === undefined) {
+    sessionInstance = session({
+      secret: 'keyboard cat',
+      resave: false,
+      saveUninitialized: false,
+      cookie: {
+        maxAge: 30 * 24 * 60 * 60 * 1000,
+      },
+      store: new TypeormStore({
+        repository: getConnection().getRepository(Session),
+      }),
+    });
+  }
+  return sessionInstance(req, res, next);
+};
 
 const app = express();
 
@@ -93,14 +98,14 @@ app.use(passport.session());
 app.engine('hbs', viewInstance.engine);
 app.set('view engine', 'hbs');
 
-app.use('/', homeRoutes);
-app.use('/home', homeRoutes);
-app.use('/login', loginRoutes);
-app.use('/register', registerRoutes);
-app.use('/settings', settingsRoutes);
-app.use('/editor', editorRoutes);
-app.use('/article', articleRoutes);
-app.use('/profile', profileRoutes);
+app.use('/', routes.home);
+app.use('/home', routes.home);
+app.use('/login', routes.login);
+app.use('/register', routes.register);
+app.use('/settings', routes.settings);
+app.use('/editor', routes.editor);
+app.use('/article', routes.article);
+app.use('/profile', routes.profile);
 
 app.use(
   (_req: Request, _res: Response, next: NextFunction): void => {

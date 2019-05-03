@@ -51,3 +51,28 @@ export async function updateUser(
   const updated = manager.merge(User, user, updates);
   await manager.save(updated);
 }
+
+export async function followUser(
+  user: User,
+  userToFollow: User
+): Promise<User> {
+  const following = await user.following;
+  if (!following.some(user => user.id === userToFollow.id)) {
+    following.push(userToFollow);
+  }
+  await getManager().save(user);
+  return user;
+}
+
+export async function unfollowUser(
+  user: User,
+  userToUnfollow: User
+): Promise<User> {
+  const following = await user.following;
+  const index = following.findIndex(user => user.id === userToUnfollow.id);
+  if (index > -1) {
+    following.splice(index, 1);
+  }
+  await getManager().save(user);
+  return user;
+}
