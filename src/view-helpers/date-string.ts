@@ -7,6 +7,6 @@ export function dateString(arg: unknown) {
   return arg.toDateString();
 }
 
-export function registerDateStringHelper(instance: typeof handlebars) {
+export function registerHelper(instance: typeof handlebars) {
   instance.registerHelper('dateString', dateString);
 }

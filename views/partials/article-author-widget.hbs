@@ -1,4 +1,4 @@
-<a href="{{profileURL author}}">
+<a href="/profile/{{uc author.username}}">
   {{#if author.image}}
   <img src="{{author.image}}" />
   {{else}}
@@ -6,6 +6,6 @@
   {{/if}}
 </a>
 <div class="info">
-  <a href="{{profileURL author}}" class="author">{{author.username}}</a>
+  <a href="/profile/{{uc author.username}}" class="author">{{author.username}}</a>
   <span class="date">{{dateString createdAt}}</span>
 </div>

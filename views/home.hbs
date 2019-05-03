@@ -27,7 +27,7 @@
             </li>
             {{#if tag}}
               <li class="nav-item">
-                <a class="nav-link active" href="{{homepageTagURL tag}}">
+                <a class="nav-link active" href="/home?filter=tag&tag={{uc tag}}">
                   <i class="ion-pound"></i>
                   {{tag}}
                 </a>
@@ -49,7 +49,7 @@
 
           <div class="tag-list">
             {{#each popularTags}}
-              <a href="{{homepageTagURL this}}" class="tag-pill tag-default">
+              <a href="/home?filter=tag&tag={{uc this}}" class="tag-pill tag-default">
                 {{this}}
               </a>
             {{/each}}

@@ -55,12 +55,12 @@
         <div class="articles-toggle">
           <ul class="nav nav-pills outline-active">
             <li class="nav-item">
-              <a class="nav-link {{#if filter.mine}}active{{/if}}" href="{{profileURL profile filter='mine'}}">
+              <a class="nav-link {{#if filter.mine}}active{{/if}}" href="/profile/{{uc profile.username}}?filter=mine">
                 My Articles
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link {{#if filter.favorited}}active{{/if}}" href="{{profileURL profile filter='favorited'}}">
+              <a class="nav-link {{#if filter.favorited}}active{{/if}}" href="/profile/{{uc profile.username}}?filter=favorited">
                 Favorited Articles
               </a>
             </li>
