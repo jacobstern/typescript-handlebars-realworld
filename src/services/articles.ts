@@ -46,7 +46,7 @@ export async function updateArticle(
     title: form.title,
     description: form.description,
     body: form.body,
-    tagList: form.tagList || [],
+    tagList: form.tagList,
   });
   if (updates.title !== undefined) {
     updates.slug = generateSlug(updates.title);

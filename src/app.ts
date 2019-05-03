@@ -11,6 +11,7 @@ import logger from 'morgan';
 import flash from 'connect-flash';
 import { TypeormStore } from 'typeorm-store';
 import { getConnection } from 'typeorm';
+import { getStatusText } from 'http-status-codes';
 import { StatusError } from './errors';
 import { findUser, findUserByEmail } from './services/accounts';
 import { User } from './entities/User';
@@ -114,14 +115,14 @@ app.use(
       return next(err);
     }
 
-    if (err instanceof Error) {
-      res.locals.message = err.message;
-      res.locals.error = req.app.get('env') === 'development' ? err : {};
-    }
+    const statusCode = err instanceof StatusError ? err.status : 500;
 
-    const status = err instanceof StatusError ? err.status : 500;
-
-    res.status(status).render('error', { user: req.user });
+    res.status(statusCode).render('error', {
+      error: req.app.get('env') === 'development' ? err : {},
+      user: req.user,
+      statusCode,
+      statusText: getStatusText(statusCode),
+    });
   }
 );
 

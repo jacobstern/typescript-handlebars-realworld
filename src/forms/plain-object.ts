@@ -1,8 +1,5 @@
-type NonFunctionPropertyNames<T> = {
-  [K in keyof T]: T[K] extends Function ? never : K
-}[keyof T];
-
 /**
- * Generate a new type with just the non-function properties of `T`.
+ * Generate a new type with just the known properties of `T`, eliminating the
+ * identity of `T` as a specific class.
  */
-export type PlainObject<T> = Pick<T, NonFunctionPropertyNames<T>>;
+export type PlainObject<T> = { [K in keyof T]: T[K] };

@@ -1,11 +1,10 @@
 import { validateOrReject, ValidationError } from 'class-validator';
-import { PlainObject } from './plain-object';
 import { MultiValidationError } from './MultiValidationError';
 import { isArray } from 'util';
 
 export async function validateHelper<T>(
   form: T,
-  values: PlainObject<T>
+  values: Partial<T>
 ): Promise<T> {
   Object.assign(form, values);
   try {

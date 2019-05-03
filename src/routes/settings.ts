@@ -21,7 +21,7 @@ router.post('/', ensureLoggedIn(), async (req: Request, res: Response) => {
   try {
     const user = req.user as User;
     const updates = emptyToOptional(req.body);
-    const form = await UserUpdatesForm.validate(user.id, updates);
+    const form = await UserUpdatesForm.validate(user, updates);
     await updateUser(user, form);
     res.redirect(`/profile/${encodeURIComponent(user.username)}`);
   } catch (e) {

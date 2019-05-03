@@ -12,6 +12,8 @@ import {
 import { validateHelper } from './validate-helper';
 import { PlainObject } from './plain-object';
 import { findUserByUsername, findUserByEmail } from '../services/accounts';
+import { User } from '../entities/User';
+import { Omit } from '../utils/omit';
 
 @ValidatorConstraint({ name: 'usernameAvailable', async: true })
 class UsernameAvailableConstraint implements ValidatorConstraintInterface {
@@ -29,7 +31,7 @@ class UsernameAvailableConstraint implements ValidatorConstraintInterface {
     }
     const form = args.object;
     if (form instanceof UserUpdatesForm) {
-      return found.id === form.getUserId();
+      return found.id === form.forUser.id;
     }
     return false;
   }
@@ -55,7 +57,7 @@ class EmailAvailableConstraint implements ValidatorConstraintInterface {
     }
     const form = args.object;
     if (form instanceof UserUpdatesForm) {
-      return found.id === form.getUserId();
+      return found.id === form.forUser.id;
     }
     return false;
   }
@@ -99,14 +101,13 @@ export class UserForm extends UserFormBase {
   }
 }
 
+/**
+ * Represents a form for updating a profile validated against a specific `User`.
+ */
 export class UserUpdatesForm extends UserFormBase {
   private __nominal: void;
 
-  private userId: number;
-
-  public getUserId(): number {
-    return this.userId;
-  }
+  public readonly forUser: User;
 
   @IsOptional()
   public readonly username?: string;
@@ -121,15 +122,15 @@ export class UserUpdatesForm extends UserFormBase {
   @IsOptional()
   public readonly bio?: string;
 
-  private constructor(userId: number) {
+  private constructor(user: User) {
     super();
-    this.userId = userId;
+    this.forUser = user;
   }
 
   public static async validate(
-    userId: number,
-    form: PlainObject<UserUpdatesForm>
+    user: User,
+    form: Omit<UserUpdatesForm, 'forUser'>
   ): Promise<UserUpdatesForm> {
-    return validateHelper(new UserUpdatesForm(userId), form);
+    return validateHelper(new UserUpdatesForm(user), form);
   }
 }

@@ -1,5 +1,6 @@
 import express, { Request, Response } from 'express';
 import { ensureLoggedIn } from 'connect-ensure-login';
+import * as t from 'io-ts';
 import { ArticleForm } from '../forms/ArticleForm';
 import { MultiValidationError } from '../forms/MultiValidationError';
 import {
@@ -10,6 +11,7 @@ import {
 import { User } from '../entities/User';
 import { collectErrorMessages } from '../utils/collect-error-messages';
 import { StatusError } from '../errors';
+import { assertType } from '../utils/assert-type';
 
 const router = express.Router();
 
@@ -36,9 +38,17 @@ router.get('/:slug', ensureLoggedIn(), async (req: Request, res: Response) => {
   });
 });
 
+const PostBodyType = t.type({
+  title: t.string,
+  description: t.string,
+  body: t.string,
+  tagList: t.union([t.array(t.string), t.undefined]),
+});
+
 router.post('/', ensureLoggedIn(), async (req: Request, res: Response) => {
+  const postBody = assertType(PostBodyType, req.body);
   try {
-    const form = await ArticleForm.validate(req.body);
+    const form = await ArticleForm.validate(postBody);
     const article = await createArticle(req.user as User, form);
     res.redirect(`/article/${article.slug}`);
   } catch (e) {
@@ -64,8 +74,13 @@ router.post('/:slug', ensureLoggedIn(), async (req: Request, res: Response) => {
   if (req.user.id !== article.author.id) {
     throw new StatusError('Forbidden', 403);
   }
+  const postBody = assertType(PostBodyType, req.body);
+  if (postBody.tagList === undefined) {
+    // Missing tags list represents empty array in this case
+    postBody.tagList = [];
+  }
   try {
-    const form = await ArticleForm.validate(req.body);
+    const form = await ArticleForm.validate(postBody);
     await updateArticle(article, form);
     res.redirect(`/article/${article.slug}`);
   } catch (e) {

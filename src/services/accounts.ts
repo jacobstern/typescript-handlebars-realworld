@@ -18,18 +18,6 @@ export async function createUser(form: UserForm): Promise<User> {
   return manager.save(newUser);
 }
 
-export async function isEmailAvailable(email: string): Promise<boolean> {
-  return await getManager()
-    .findOne(User, { email })
-    .then(found => found === undefined);
-}
-
-export async function isUsernameAvailable(username: string): Promise<boolean> {
-  return await getManager()
-    .findOne(User, { username })
-    .then(found => found === undefined);
-}
-
 export async function findUserByEmail(
   email: string
 ): Promise<User | undefined> {
@@ -50,7 +38,15 @@ export async function updateUser(
   user: User,
   form: UserUpdatesForm
 ): Promise<void> {
-  const updates = getEntityUpdates(user, form);
+  const updates = getEntityUpdates(user, {
+    username: form.username,
+    email: form.email,
+    image: form.image,
+    bio: form.bio,
+  });
+  if (form.password !== undefined) {
+    updates.password = await hashPassword(form.password);
+  }
   const manager = getManager();
   const updated = manager.merge(User, user, updates);
   await manager.save(updated);
