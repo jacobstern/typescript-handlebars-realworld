@@ -55,6 +55,7 @@
     "@types/passport-local": "1.0.33",
     "@types/shortid": "0.0.29",
     "@types/slug": "0.9.1",
+    "@types/uniqid": "^4.1.3",
     "bcrypt": "^3.0.6",
     "class-validator": "^0.9.1",
     "compression": "^1.7.4",
@@ -80,6 +81,7 @@
     "slug": "^1.1.0",
     "typeorm": "0.2.16",
     "typeorm-store": "^1.2.0",
-    "typescript": "^3.4.5"
+    "typescript": "^3.4.5",
+    "uniqid": "^5.0.3"
   }
 }

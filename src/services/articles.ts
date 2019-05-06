@@ -1,12 +1,10 @@
 import { getManager, createQueryBuilder } from 'typeorm';
 import shortid from 'shortid';
 import slug from 'slug';
-import * as t from 'io-ts';
 import { ArticleForm } from '../forms/ArticleForm';
 import { Article } from '../entities/Article';
 import { User } from '../entities/User';
 import { getEntityUpdates } from './get-entity-updates';
-import { assertType } from '../utils/assert-type';
 
 // Use + character instead of - for generated slugs
 // prettier-ignore
@@ -60,13 +58,6 @@ export async function updateArticle(
   await manager.save(updated);
 }
 
-const TagsAggregateType = t.array(
-  t.type({
-    tag_count: t.string,
-    tag: t.string,
-  })
-);
-
 export type Tag = string;
 
 export async function listPopularTags(): Promise<Tag[]> {
@@ -75,7 +66,7 @@ export async function listPopularTags(): Promise<Tag[]> {
 from article, lateral unnest(article.tags) as ut(tag)
 group by ut.tag
 order by tag_count desc limit 15`);
-  return assertType(TagsAggregateType, rawResult).map(row => row.tag);
+  return rawResult.map((row: any) => row.tag);
 }
 
 export interface ListArticlesResult {

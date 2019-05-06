@@ -1,17 +1,14 @@
 import express, { Request, Response } from 'express';
+import { validate } from 'class-validator';
 import { ensureLoggedIn } from 'connect-ensure-login';
 import * as t from 'io-ts';
-import { ArticleForm } from '../forms/ArticleForm';
-import { MultiValidationError } from '../forms/MultiValidationError';
-import {
-  createArticle,
-  findArticleBySlug,
-  updateArticle,
-} from '../services/articles';
-import { User } from '../entities/User';
 import { collectErrorMessages } from '../utils/collect-error-messages';
 import { StatusError } from '../errors';
-import { assertType } from '../utils/assert-type';
+import { assertPostBodyType } from '../utils/assert-type';
+import { ArticleRepository } from '../repositories/ArticleRepository';
+import { generateSlug } from '../article-slugs';
+import { optional } from '../utils/type-combinators';
+import { Article } from '../entities/Article';
 
 const router = express.Router();
 
@@ -24,8 +21,9 @@ router.get('/', ensureLoggedIn(), (req: Request, res: Response) => {
 });
 
 router.get('/:slug', ensureLoggedIn(), async (req: Request, res: Response) => {
-  const article = await findArticleBySlug(req.params.slug);
-  if (article === undefined) {
+  const repo = req.dbConnection.getCustomRepository(ArticleRepository);
+  const article = await repo.findOne({ slug: req.params.slug });
+  if (article == null) {
     throw new StatusError('Article Not Found', 404);
   }
   if (req.user.id !== article.author.id) {
@@ -42,58 +40,68 @@ const PostBodyType = t.type({
   title: t.string,
   description: t.string,
   body: t.string,
-  tagList: t.union([t.array(t.string), t.undefined]),
+  tagList: optional(t.array(t.string)),
 });
 
 router.post('/', ensureLoggedIn(), async (req: Request, res: Response) => {
-  const postBody = assertType(PostBodyType, req.body);
-  try {
-    const form = await ArticleForm.validate(postBody);
-    const article = await createArticle(req.user as User, form);
+  const repo = req.dbConnection.getCustomRepository(ArticleRepository);
+  const postBody = assertPostBodyType(PostBodyType, req.body);
+  if (postBody.tagList == null) {
+    postBody.tagList = [];
+  }
+  const article = new Article();
+  article.title = postBody.title;
+  article.slug = generateSlug(postBody.title);
+  article.body = postBody.body;
+  article.description = postBody.description;
+  article.tagList = postBody.tagList;
+  article.author = req.user;
+  const validationErrors = await validate(article);
+  if (validationErrors.length > 0) {
+    res.render('editor', {
+      title: 'New post',
+      nav: { newPost: true },
+      user: req.user,
+      article: postBody,
+      errorMessages: collectErrorMessages(validationErrors),
+    });
+  } else {
+    await repo.save(article);
     res.redirect(`/article/${article.slug}`);
-  } catch (e) {
-    if (e instanceof MultiValidationError) {
-      res.render('editor', {
-        title: 'New post',
-        nav: { newPost: true },
-        user: req.user,
-        article: req.body,
-        errorMessages: collectErrorMessages(e.errors),
-      });
-    } else {
-      throw e;
-    }
   }
 });
 
 router.post('/:slug', ensureLoggedIn(), async (req: Request, res: Response) => {
-  const article = await findArticleBySlug(req.params.slug);
-  if (article === undefined) {
+  const repo = req.dbConnection.getCustomRepository(ArticleRepository);
+  const article = await repo.findOne({ slug: req.params.slug });
+  if (article == null) {
     throw new StatusError('Article Not Found', 404);
   }
   if (req.user.id !== article.author.id) {
     throw new StatusError('Forbidden', 403);
   }
-  const postBody = assertType(PostBodyType, req.body);
-  if (postBody.tagList === undefined) {
-    // Missing tags list represents empty array in this case
+  const postBody = assertPostBodyType(PostBodyType, req.body);
+  if (postBody.tagList == null) {
     postBody.tagList = [];
   }
-  try {
-    const form = await ArticleForm.validate(postBody);
-    await updateArticle(article, form);
+  if (postBody.title !== article.title) {
+    article.title = postBody.title;
+    article.slug = generateSlug(postBody.title);
+  }
+  article.description = postBody.description;
+  article.body = postBody.body;
+  article.tagList = postBody.tagList;
+  const validationErrors = await validate(article);
+  if (validationErrors.length > 0) {
+    res.render('editor', {
+      title: 'Edit post',
+      user: req.user,
+      article: req.body,
+      errorMessages: collectErrorMessages(validationErrors),
+    });
+  } else {
+    await repo.save(article);
     res.redirect(`/article/${article.slug}`);
-  } catch (e) {
-    if (e instanceof MultiValidationError) {
-      res.render('editor', {
-        title: 'Edit post',
-        user: req.user,
-        article: req.body,
-        errorMessages: collectErrorMessages(e.errors),
-      });
-    } else {
-      throw e;
-    }
   }
 });
 

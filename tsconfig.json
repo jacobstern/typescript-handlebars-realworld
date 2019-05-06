@@ -1,19 +1,18 @@
 {
   "compilerOptions": {
     "target": "es2017",
-    "lib": ["esnext"],
-    "allowJs": false,
+    "lib": ["es2017"],
+    "module": "commonjs",
     "skipLibCheck": true,
     "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "strict": true,
-    "module": "commonjs",
+    "strictBindCallApply": true,
+    "strictFunctionTypes": true,
     "resolveJsonModule": true,
-    "outDir": "build/",
-    "strictPropertyInitialization": false,
-    "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "typeRoots": ["./node_modules/@types/"]
+    "emitDecoratorMetadata": true,
+    "noImplicitAny": true,
+    "outDir": "build/",
+    "typeRoots": ["node_modules/@types/", "src/types"]
   },
   "exclude": ["node_modules/", "build/", "public/"]
 }

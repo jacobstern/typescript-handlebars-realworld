@@ -5,30 +5,96 @@ import {
   OneToMany,
   ManyToMany,
   JoinTable,
-  getManager,
+  BaseEntity,
 } from 'typeorm';
 import bcrypt from 'bcrypt';
+import {
+  IsEmail,
+  ValidatorConstraint,
+  ValidatorConstraintInterface,
+  ValidationArguments,
+  Validator,
+  Validate,
+  MinLength,
+} from 'class-validator';
 import { Article } from './Article';
+import { findUserByEmail, findUserByUsername } from '../services/accounts';
+
+@ValidatorConstraint({ name: 'usernameAvailable', async: true })
+class UsernameAvailableConstraint implements ValidatorConstraintInterface {
+  async validate(value: unknown, args: ValidationArguments): Promise<boolean> {
+    if (typeof value !== 'string') {
+      return false;
+    }
+    if (value.length === 0) {
+      // Short-circuit if username is clearly not valid
+      return true;
+    }
+    const found = await findUserByUsername(value);
+    if (found === undefined) {
+      return true;
+    }
+    const user = args.object as Record<string, unknown>;
+    if (typeof user.id === 'number') {
+      return found.id === user.id; // Already claimed, by this User
+    }
+    return false;
+  }
+
+  defaultMessage() {
+    return 'username $value is already in use';
+  }
+}
+
+@ValidatorConstraint({ name: 'emailAvailable', async: true })
+class EmailAvailableConstraint implements ValidatorConstraintInterface {
+  async validate(value: unknown, args: ValidationArguments): Promise<boolean> {
+    if (typeof value !== 'string') {
+      return false;
+    }
+    if (!new Validator().isEmail(value)) {
+      // Validations don't short circuit, so just stop here if it's not a valid email
+      return true;
+    }
+    const found = await findUserByEmail(value);
+    if (found == null) {
+      return true;
+    }
+    const user = args.object as Record<string, unknown>;
+    if (typeof user.id === 'number') {
+      return found.id === user.id; // Already claimed, by this User
+    }
+    return false;
+  }
+
+  defaultMessage() {
+    return 'email $value is already in use';
+  }
+}
 
 @Entity()
-export class User {
+export class User extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @MinLength(3)
+  @Validate(UsernameAvailableConstraint)
   @Column({ unique: true, type: 'citext' })
   username: string;
 
+  @IsEmail()
+  @Validate(EmailAvailableConstraint)
   @Column({ unique: true, type: 'citext' })
   email: string;
 
-  @Column()
+  @Column({ select: false })
   password: string;
 
-  @Column('text', { nullable: true })
-  bio?: string | null;
+  @Column({ nullable: true })
+  bio: string;
 
-  @Column('text', { nullable: true })
-  image?: string | null;
+  @Column({ nullable: true })
+  image: string;
 
   @OneToMany(_type => Article, article => article.author)
   articles: Promise<Article[]>;

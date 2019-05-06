@@ -1,8 +1,8 @@
 <div class="article-meta">
-  {{>article-author-widget article}}
+  {{>article-author-widget }}
 
-  {{#if isOwnArticle}}
-    <a href="/editor/{{article.slug}}" class="btn btn-outline-secondary btn-sm">
+  {{#if mine}}
+    <a href="/editor/{{slug}}" class="btn btn-outline-secondary btn-sm">
       <i class="ion-edit"></i> Edit Article    
     </a>
 
@@ -14,13 +14,13 @@
     <button class="btn btn-sm btn-outline-secondary">
       <i class="ion-plus-round"></i>
       &nbsp;
-      Follow {{article.author.username}}
+      Follow {{author.username}}
     </button>
     &nbsp;
     <button class="btn btn-sm btn-outline-primary">
       <i class="ion-heart"></i>
       &nbsp;
-      Favorite Article <span class="counter">({{article.favoritesCount}})</span>
+      Favorite Article <span class="counter">({{favoritesCount}})</span>
     </button>
   {{/if}}
 </div>

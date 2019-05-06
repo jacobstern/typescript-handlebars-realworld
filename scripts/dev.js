@@ -37,9 +37,11 @@ async function main() {
 
   const livereloadServer = livereload.createServer({
     exts: ['hbs', 'js'],
-    exclusions: ['build/', 'scripts/', '.git/', 'node_modules/'],
   });
-  livereloadServer.watch(rootDir);
+  livereloadServer.watch([
+    path.resolve(rootDir, 'views/'),
+    path.resolve(rootDir, 'public/js/'),
+  ]);
 
   const tsNodeDev = spawn(
     'ts-node-dev',
@@ -54,10 +56,13 @@ async function main() {
   tsNodeDev.stderr.pipe(process.stderr);
 }
 
+function formatDiagnostic(diagnostic) {
+  // The TypeScript formatter adds a trailing newline, which is not desirable.
+  return ts.formatDiagnostic(diagnostic, formatHost).trimRight();
+}
+
 function reportDiagnostic(diagnostic) {
-  console.error(
-    chalk.red(ts.formatDiagnostic(diagnostic, formatHost).trimRight())
-  );
+  console.error(chalk.red(formatDiagnostic(diagnostic)));
 }
 
 /**
@@ -65,9 +70,7 @@ function reportDiagnostic(diagnostic) {
  * This is mainly for messages like "Starting compilation" or "Compilation completed".
  */
 function reportWatchStatusChanged(diagnostic) {
-  if (process.argv.includes('--verbose')) {
-    console.info(ts.formatDiagnostic(diagnostic, formatHost).trimRight());
-  }
+  console.info(formatDiagnostic(diagnostic));
 }
 
 main();

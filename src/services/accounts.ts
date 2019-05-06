@@ -18,19 +18,15 @@ export async function createUser(form: UserForm): Promise<User> {
   return manager.save(newUser);
 }
 
-export async function findUserByEmail(
-  email: string
-): Promise<User | undefined> {
+export async function findUserByEmail(email: string): Promise<User> {
   return await getManager().findOne(User, { email });
 }
 
-export async function findUserByUsername(
-  username: string
-): Promise<User | undefined> {
+export async function findUserByUsername(username: string): Promise<User> {
   return await getManager().findOne(User, { username });
 }
 
-export async function findUser(id: number): Promise<User | undefined> {
+export async function findUser(id: number): Promise<User> {
   return await getManager().findOne(User, { id });
 }
 

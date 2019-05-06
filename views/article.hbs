@@ -5,7 +5,7 @@
 
       <h1>{{article.title}}</h1>
 
-      {{>article-meta}}
+      {{>article-meta article}}
     </div>
   </div>
 
@@ -13,14 +13,14 @@
 
     <div class="row article-content">
       <div class="col-md-12">
-        {{{articleHTML}}}
+        {{{article.html}}}
       </div>
     </div>
 
     <hr />
 
     <div class="article-actions">
-      {{>article-meta}}
+      {{>article-meta article}}
     </div>
 
     <div class="row">
@@ -70,11 +70,8 @@
             </span>
           </div>
         </div>
-        
       </div>
-
     </div>
-
   </div>
 
   <form

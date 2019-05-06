@@ -23,6 +23,7 @@ import { User } from './entities/User';
 import { Session } from './entities/Session';
 import { configureHandlebars } from './handlebars-instance';
 import routes from './routes';
+import { requestDbConnection } from './middlewares/db-connection-middleware';
 
 const viewInstance = expressHandlebars.create({
   defaultLayout: 'main.hbs',
@@ -91,6 +92,7 @@ app.use(cookieParser());
 app.use(flash());
 app.use(sessionMiddleware);
 app.use(express.static(path.resolve(__dirname, '../public')));
+app.use(requestDbConnection());
 
 app.use(passport.initialize());
 app.use(passport.session());
