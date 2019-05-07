@@ -10,9 +10,9 @@ import {
 import { User } from './User';
 import { IsNotEmpty } from 'class-validator';
 
-@Entity({ name: 'article' })
+@Entity()
 @Index('article_tags_index', { synchronize: false }) // GIN index managed in migrations
-export class ArticleEntity {
+export class Article {
   @PrimaryGeneratedColumn()
   id: number;
 

@@ -1,5 +1,5 @@
 import { validateOrReject, ValidationError } from 'class-validator';
-import { MultiValidationError } from '../services/internal/validation';
+import { MultiValidationError } from './MultiValidationError';
 import { isArray } from 'util';
 
 export async function validateHelper<T>(

@@ -1,20 +1,42 @@
 import express, { Request, Response } from 'express';
+import * as t from 'io-ts';
 import {
   listPopularTags,
-  feedArticles,
-  listArticles,
   ListArticlesResult,
+  listArticlesFeed,
+  listArticles,
 } from '../services/articles';
+import { assertType } from '../utils/assert-type';
+import { User } from '../entities/User';
 
 const router = express.Router();
 
+const QueryParamsType = t.partial({
+  filter: t.string,
+  tag: t.string,
+});
+
 type Filter = 'global' | 'following' | 'tag';
 
+async function listArticlesForHome(
+  filter: Filter,
+  tag: string | undefined,
+  page: number,
+  user?: User
+): Promise<ListArticlesResult> {
+  if (filter === 'following' && user) {
+    return await listArticlesFeed(user);
+  } else if (filter === 'tag') {
+    return await listArticles({ tag });
+  }
+  return await listArticles();
+}
+
 router.get('/', async (req: Request, res: Response) => {
-  const queryParams = req.query as Record<string, string>;
+  const queryParams = assertType(QueryParamsType, req.query);
 
   let filter: Filter = req.user ? 'following' : 'global';
-  let tag: string;
+  let tag: string | undefined = undefined;
 
   switch (queryParams.filter) {
     case 'following':
@@ -30,29 +52,14 @@ router.get('/', async (req: Request, res: Response) => {
       }
   }
 
-  if (filter === 'following' && req.user == null) {
-    return res.redirect('/');
+  if (filter === 'following' && !req.user) {
+    res.redirect('/');
   }
 
-  let result: ListArticlesResult;
-
-  switch (filter) {
-    case 'following':
-      result = await feedArticles(req.user);
-      break;
-    case 'tag':
-      result = await listArticles({ tag });
-      break;
-    case 'global':
-    default:
-      result = await listArticles();
-      break;
-  }
+  const { articles } = await listArticlesForHome(filter, tag, 0, req.user);
 
   const filterHash: Record<string, boolean> = {};
   filterHash[filter] = true;
-
-  const { articles } = result;
 
   res.render('home', {
     title: 'Home',

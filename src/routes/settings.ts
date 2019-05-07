@@ -2,7 +2,7 @@ import express, { Request, Response } from 'express';
 import { ensureLoggedIn } from 'connect-ensure-login';
 import { UserUpdatesForm } from '../forms/UserForm';
 import { updateUser } from '../services/accounts';
-import { MultiValidationError } from '../services/internal/validation';
+import { MultiValidationError } from '../forms/MultiValidationError';
 import { emptyToOptional } from '../utils/empty-to-optional';
 import { collectErrorMessages } from '../utils/collect-error-messages';
 import { User } from '../entities/User';
