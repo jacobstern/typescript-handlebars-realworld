@@ -7,8 +7,8 @@ import { ArticleRepository } from '../repositories/ArticleRepository';
 const router = express.Router();
 
 router.get('/:slug', async (req: Request, res: Response) => {
-  const repo = req.dbConnection.getCustomRepository(ArticleRepository);
-  const article = await repo.findOne({ slug: req.params.slug });
+  const repo = req.entityManager.getCustomRepository(ArticleRepository);
+  const article = await repo.findBySlug(req.params.slug);
   if (article == null) {
     throw new StatusError('Article Not Found', 404);
   }
@@ -27,8 +27,8 @@ router.post(
   '/:slug/delete',
   ensureLoggedIn(),
   async (req: Request, res: Response) => {
-    const repo = req.dbConnection.getCustomRepository(ArticleRepository);
-    const article = await repo.findOne({ slug: req.params.slug });
+    const repo = req.entityManager.getCustomRepository(ArticleRepository);
+    const article = await repo.findBySlug(req.params.slug);
     if (article == null) {
       throw new StatusError('Article Not Found', 404);
     }

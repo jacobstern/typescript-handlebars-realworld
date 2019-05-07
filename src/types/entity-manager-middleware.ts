@@ -1,10 +1,10 @@
 // eslint-disable-next-line
-import { Connection } from 'typeorm';
+import { EntityManager } from 'typeorm';
 
 declare global {
   namespace Express {
     interface Request {
-      dbConnection: Connection;
+      entityManager: EntityManager;
     }
   }
 }

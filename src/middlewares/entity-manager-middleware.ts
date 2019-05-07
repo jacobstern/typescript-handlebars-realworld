@@ -1,11 +1,11 @@
 import { Request, Response, NextFunction } from 'express';
-import { getConnection } from 'typeorm';
+import { getManager } from 'typeorm';
 
-export const requestDbConnection = () => (
+export const requestEntityManager = () => (
   req: Request,
   _res: Response,
   next: NextFunction
 ) => {
-  req.dbConnection = getConnection();
+  req.entityManager = getManager();
   next();
 };

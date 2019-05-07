@@ -1,62 +1,6 @@
 import { getManager, createQueryBuilder } from 'typeorm';
-import shortid from 'shortid';
-import slug from 'slug';
-import { ArticleForm } from '../forms/ArticleForm';
 import { Article } from '../entities/Article';
 import { User } from '../entities/User';
-import { getEntityUpdates } from './get-entity-updates';
-
-// Use + character instead of - for generated slugs
-// prettier-ignore
-shortid.characters('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ+_');
-
-function generateSlug(title: string): string {
-  return [slug(title), shortid.generate()].join('-');
-}
-
-export async function createArticle(
-  user: User,
-  form: ArticleForm
-): Promise<Article> {
-  const manager = getManager();
-  const newArticle = manager.create(Article, {
-    title: form.title,
-    description: form.description,
-    body: form.body,
-    tagList: form.tagList || [],
-    slug: generateSlug(form.title),
-  });
-  newArticle.author = user;
-  return manager.save(newArticle);
-}
-
-export async function findArticleBySlug(
-  slug: string
-): Promise<Article | undefined> {
-  return await getManager().findOne(Article, { slug });
-}
-
-export async function deleteArticle(article: Article): Promise<void> {
-  await getManager().remove(article);
-}
-
-export async function updateArticle(
-  article: Article,
-  form: ArticleForm
-): Promise<void> {
-  const updates = getEntityUpdates(article, {
-    title: form.title,
-    description: form.description,
-    body: form.body,
-    tagList: form.tagList,
-  });
-  if (updates.title !== undefined) {
-    updates.slug = generateSlug(updates.title);
-  }
-  const manager = getManager();
-  const updated = manager.merge(Article, article, updates);
-  await manager.save(updated);
-}
 
 export type Tag = string;
 
