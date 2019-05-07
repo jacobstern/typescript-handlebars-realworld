@@ -1,66 +1,74 @@
 import { getManager, createQueryBuilder } from 'typeorm';
-import shortid from 'shortid';
+import uniqid from 'uniqid';
 import slug from 'slug';
-import { ArticleForm } from '../forms/ArticleForm';
-import { Article } from '../entities/Article';
+import { ArticleEntity } from '../entities/ArticleEntity';
 import { User } from '../entities/User';
-import { getEntityUpdates } from './get-entity-updates';
+import { validateOrReject } from 'class-validator';
 
-// Use + character instead of - for generated slugs
-// prettier-ignore
-shortid.characters('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ+_');
+export interface ArticleWrite {
+  title: string;
+  description: string;
+  body: string;
+  tagList?: string[];
+}
+
+export interface Article extends ArticleWrite {
+  id: number;
+  slug: string;
+  tagList: string[];
+  createdAt: Date;
+  updatedAt: Date;
+  author: User;
+}
 
 function generateSlug(title: string): string {
-  return [slug(title), shortid.generate()].join('-');
+  return slug(title) + '-' + uniqid();
 }
 
 export async function createArticle(
-  user: User,
-  form: ArticleForm
+  article: ArticleWrite,
+  user: User
 ): Promise<Article> {
   const manager = getManager();
-  const newArticle = manager.create(Article, {
-    title: form.title,
-    description: form.description,
-    body: form.body,
-    tagList: form.tagList || [],
-    slug: generateSlug(form.title),
-  });
-  newArticle.author = user;
-  return manager.save(newArticle);
+  const entity = new ArticleEntity();
+  entity.title = article.title;
+  entity.slug = generateSlug(article.title);
+  entity.body = article.body;
+  entity.description = article.description;
+  entity.tagList = article.tagList || [];
+  entity.author = user;
+  await validateOrReject(entity);
+  return manager.save(entity);
 }
 
-export async function findArticleBySlug(
-  slug: string
-): Promise<Article | undefined> {
-  return await getManager().findOne(Article, { slug });
+export async function findArticleBySlug(slug: string): Promise<Article> {
+  return await getManager().findOne(ArticleEntity, { slug });
 }
 
 export async function deleteArticle(article: Article): Promise<void> {
-  await getManager().remove(article);
+  const manager = getManager();
+  const entity = await manager.preload(ArticleEntity, article);
+  await manager.delete(ArticleEntity, entity);
 }
 
 export async function updateArticle(
   article: Article,
-  form: ArticleForm
+  updates: ArticleWrite
 ): Promise<void> {
-  const updates = getEntityUpdates(article, {
-    title: form.title,
-    description: form.description,
-    body: form.body,
-    tagList: form.tagList,
-  });
-  if (updates.title !== undefined) {
-    updates.slug = generateSlug(updates.title);
-  }
   const manager = getManager();
-  const updated = manager.merge(Article, article, updates);
-  await manager.save(updated);
+  const entity = await manager.preload(ArticleEntity, article);
+  if (updates.title !== entity.title) {
+    entity.title = updates.title;
+    entity.slug = generateSlug(updates.title);
+  }
+  entity.description = updates.description;
+  entity.body = updates.body;
+  entity.tagList = updates.tagList || [];
+  await validateOrReject(entity);
+  await manager.save(entity);
 }
 
-export type Tag = string;
-
-export async function listPopularTags(): Promise<Tag[]> {
+export async function listPopularTags(): Promise<string[]> {
   const rawResult = await getManager()
     .query(`select count(*) as tag_count, ut.tag
 from article, lateral unnest(article.tags) as ut(tag)
@@ -85,7 +93,7 @@ export async function listArticles(
   options: ListArticlesOptions = {}
 ): Promise<ListArticlesResult> {
   const { offset = 0, limit = 20 } = options;
-  const query = createQueryBuilder(Article, 'article');
+  const query = createQueryBuilder(ArticleEntity, 'article');
   if (options.tag) {
     query.where('article.tags @> ARRAY [:tag]', { tag: options.tag });
   }
@@ -104,17 +112,17 @@ export async function listArticles(
   };
 }
 
-export interface ListArticlesFeedOptions {
+export interface FeedArticlesOptions {
   offset?: number;
   limit?: number;
 }
 
-export async function listArticlesFeed(
+export async function feedArticles(
   user: User,
-  options: ListArticlesFeedOptions = {}
+  options: FeedArticlesOptions = {}
 ): Promise<ListArticlesResult> {
   const { offset = 0, limit = 20 } = options;
-  const query = createQueryBuilder(Article, 'article')
+  const query = createQueryBuilder(ArticleEntity, 'article')
     .innerJoinAndSelect('article.author', 'author')
     .innerJoin(
       'user_following_user',

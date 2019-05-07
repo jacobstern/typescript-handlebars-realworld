@@ -17,7 +17,7 @@ import {
   Validate,
   MinLength,
 } from 'class-validator';
-import { Article } from './Article';
+import { ArticleEntity } from './ArticleEntity';
 import { findUserByEmail, findUserByUsername } from '../services/accounts';
 
 @ValidatorConstraint({ name: 'usernameAvailable', async: true })
@@ -96,8 +96,8 @@ export class User extends BaseEntity {
   @Column({ nullable: true })
   image: string;
 
-  @OneToMany(_type => Article, article => article.author)
-  articles: Promise<Article[]>;
+  @OneToMany(_type => ArticleEntity, article => article.author)
+  articles: Promise<ArticleEntity[]>;
 
   @ManyToMany(_type => User, user => user.following)
   followers: Promise<User[]>;

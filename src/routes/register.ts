@@ -1,7 +1,7 @@
 import express, { Request, Response, NextFunction } from 'express';
 import { createUser } from '../services/accounts';
 import { UserForm } from '../forms/UserForm';
-import { MultiValidationError } from '../forms/MultiValidationError';
+import { MultiValidationError } from '../services/internal/validation';
 import { collectErrorMessages } from '../utils/collect-error-messages';
 
 const router = express.Router();
