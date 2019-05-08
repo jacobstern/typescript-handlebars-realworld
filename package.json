@@ -37,7 +37,7 @@
     "prettier": "^1.17.0",
     "rimraf": "^2.6.3",
     "ts-node": "^8.1.0",
-    "ts-node-dev": "^1.0.0-pre.32",
+    "ts-node-dev": "github:whitecolor/ts-node-dev#0f90573b0ee0cf3981ad3017df0848fd7cf192fd",
     "yarn": "^1.15.2"
   },
   "dependencies": {
