@@ -5,9 +5,12 @@ import {
   unfollowUser,
 } from '../services/accounts';
 import { StatusError } from '../errors';
-import { listArticles, ListArticlesOptions } from '../services/articles';
 import { User } from '../entities/User';
 import { ensureLoggedIn } from 'connect-ensure-login';
+import {
+  ArticleRepository,
+  ListOptions,
+} from '../repositories/ArticleRepository';
 
 const router = express.Router();
 
@@ -56,7 +59,8 @@ router.post(
 );
 
 router.get('/:username', async (req: Request, res: Response) => {
-  const user = req.user as User | undefined;
+  const repo = req.entityManager.getCustomRepository(ArticleRepository);
+  const user = req.user as User;
   const profile = await findUserByUsername(req.params.username);
 
   if (profile === undefined) {
@@ -69,21 +73,21 @@ router.get('/:username', async (req: Request, res: Response) => {
     filter = 'favorited';
   }
 
-  let listArticlesOptions: ListArticlesOptions = {};
+  let listOptions: ListOptions = {};
   switch (filter) {
     case 'mine':
-      listArticlesOptions = { author: profile };
+      listOptions = { author: profile };
       break;
   }
 
-  const { articles } = await listArticles(listArticlesOptions);
+  const articles = await repo.list(listOptions);
 
-  let userProfile = false;
+  let isUserProfile = false;
   let following = false;
 
   if (user) {
-    userProfile = user.id === profile.id;
-    if (!userProfile) {
+    isUserProfile = user.id === profile.id;
+    if (!isUserProfile) {
       following = (await user.following).some(user => user.id === profile.id);
     }
   }
@@ -93,9 +97,8 @@ router.get('/:username', async (req: Request, res: Response) => {
 
   res.render('profile', {
     user,
-    profile: { ...profile, following },
-    nav: { userProfile },
-    userProfile,
+    nav: { userProfile: isUserProfile },
+    profile: { ...profile, following, mine: isUserProfile },
     articles,
     filter: filterHash,
     postRedirect: req.originalUrl,
