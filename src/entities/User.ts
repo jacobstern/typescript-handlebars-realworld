@@ -90,10 +90,10 @@ export class User extends BaseEntity {
   @Column({ select: false })
   password: string;
 
-  @Column({ nullable: true })
+  @Column({ type: 'text', nullable: true })
   bio: string;
 
-  @Column({ nullable: true })
+  @Column({ type: 'text', nullable: true })
   image: string;
 
   @OneToMany(_type => Article, article => article.author)
@@ -105,6 +105,10 @@ export class User extends BaseEntity {
   @ManyToMany(_type => User, user => user.followers)
   @JoinTable()
   following: Promise<User[]>;
+
+  @ManyToMany(_type => Article, article => article.favoritedBy)
+  @JoinTable()
+  favorites: Promise<Article[]>;
 
   public async checkPassword(password: string): Promise<boolean> {
     return bcrypt.compare(password, this.password);

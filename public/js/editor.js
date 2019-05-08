@@ -50,13 +50,15 @@
 
     tagInput.addEventListener('keypress', function(event) {
       if (event.keyCode === 13) {
-        event.preventDefault();
-        var tagName = event.target.value.trim();
-        if (tagName) {
-          var tagElement = createTag(tagName);
-          tagList.appendChild(tagElement);
-          registerRemoveTagHandler(tagElement);
-          event.target.value = '';
+        if (event.target.value) {
+          event.preventDefault();
+          var tagName = event.target.value.trim();
+          if (tagName) {
+            var tagElement = createTag(tagName);
+            tagList.appendChild(tagElement);
+            registerRemoveTagHandler(tagElement);
+            event.target.value = '';
+          }
         }
       }
     });

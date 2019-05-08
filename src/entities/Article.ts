@@ -6,6 +6,7 @@ import {
   CreateDateColumn,
   ManyToOne,
   Index,
+  ManyToMany,
 } from 'typeorm';
 import { User } from './User';
 import { IsNotEmpty } from 'class-validator';
@@ -29,7 +30,7 @@ export class Article {
   body: string;
 
   @IsNotEmpty({ each: true })
-  @Column('text', { array: true, name: 'tags' })
+  @Column('text', { array: true })
   tagList: string[];
 
   @Column({ unique: true })
@@ -46,4 +47,10 @@ export class Article {
     nullable: false,
   })
   author: User;
+
+  @ManyToMany(_type => User, user => user.favorites)
+  favoritedBy: Promise<User[]>;
+
+  @Column({ default: 0 })
+  favoritesCount: number;
 }

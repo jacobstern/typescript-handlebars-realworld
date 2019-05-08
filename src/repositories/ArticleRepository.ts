@@ -34,13 +34,14 @@ export class ArticleRepository extends AbstractRepository<Article> {
 
   private listQuery(options: ListOptions): SelectQueryBuilder<Article> {
     const query = this.baseQuery(options);
+    const tagWhereClause = 'article."tagList" @> ARRAY [:tag]';
     if (options.author != null) {
       query.where({ author: options.author });
       if (options.tag != null) {
-        query.andWhere('article.tags @> ARRAY [:tag]', { tag: options.tag });
+        query.andWhere(tagWhereClause, { tag: options.tag });
       }
     } else if (options.tag != null) {
-      query.where('article.tags @> ARRAY [:tag]', { tag: options.tag });
+      query.where(tagWhereClause, { tag: options.tag });
     }
     return query;
   }
@@ -93,10 +94,10 @@ export class ArticleRepository extends AbstractRepository<Article> {
 
   async listPopularTags(): Promise<string[]> {
     const rawResult = await this.manager
-      .query(`select count(*) as tag_count, ut.tag
-from article, lateral unnest(article.tags) as ut(tag)
+      .query(`select count(*) as tagCount, ut.tag
+from article, lateral unnest(article."tagList") as ut(tag)
 group by ut.tag
-order by tag_count desc limit 15`);
+order by tagCount desc limit 15`);
     return rawResult.map((row: any) => row.tag);
   }
 }
