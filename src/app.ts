@@ -1,12 +1,7 @@
 import compression from 'compression';
 import cookieParser from 'cookie-parser';
 import path from 'path';
-import express, {
-  NextFunction,
-  Request,
-  Response,
-  RequestHandler,
-} from 'express';
+import express, { NextFunction, Request, Response, RequestHandler } from 'express';
 import passport from 'passport';
 import { Strategy as PassportLocalStrategy } from 'passport-local';
 import session from 'express-session';

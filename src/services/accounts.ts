@@ -30,10 +30,7 @@ export async function findUser(id: number): Promise<User> {
   return await getManager().findOne(User, { id });
 }
 
-export async function updateUser(
-  user: User,
-  form: UserUpdatesForm
-): Promise<void> {
+export async function updateUser(user: User, form: UserUpdatesForm): Promise<void> {
   const updates = getEntityUpdates(user, {
     username: form.username,
     email: form.email,
@@ -48,10 +45,7 @@ export async function updateUser(
   await manager.save(updated);
 }
 
-export async function followUser(
-  user: User,
-  userToFollow: User
-): Promise<User> {
+export async function followUser(user: User, userToFollow: User): Promise<User> {
   const following = await user.following;
   if (!following.some(user => user.id === userToFollow.id)) {
     following.push(userToFollow);
@@ -60,10 +54,7 @@ export async function followUser(
   return user;
 }
 
-export async function unfollowUser(
-  user: User,
-  userToUnfollow: User
-): Promise<User> {
+export async function unfollowUser(user: User, userToUnfollow: User): Promise<User> {
   const following = await user.following;
   const index = following.findIndex(user => user.id === userToUnfollow.id);
   if (index > -1) {

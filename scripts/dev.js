@@ -14,11 +14,7 @@ const formatHost = {
 async function main() {
   const rootDir = path.resolve(__dirname, '..');
 
-  const configPath = ts.findConfigFile(
-    rootDir,
-    ts.sys.fileExists,
-    'tsconfig.json'
-  );
+  const configPath = ts.findConfigFile(rootDir, ts.sys.fileExists, 'tsconfig.json');
 
   if (!configPath) {
     throw new Error("Could not find a valid 'tsconfig.json'.");
@@ -52,9 +48,7 @@ async function main() {
 
   const tsNodeDev = spawn(
     'ts-node-dev',
-    '--respawn --transpileOnly --no-notify --debounce 800 -- src/server.ts'.split(
-      /\s+/
-    )
+    '--respawn --transpileOnly --no-notify --debounce 800 -- src/server.ts'.split(/\s+/)
   );
   tsNodeDev.stdout.on('data', chunk => {
     if (/^Express server listening on port/.test(chunk.toString())) {

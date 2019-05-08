@@ -45,85 +45,65 @@ router.get('/:slug', async (req: Request, res: Response) => {
   });
 });
 
-router.post(
-  '/:slug/delete',
-  ensureLoggedIn(),
-  async (req: Request, res: Response) => {
-    const repo = req.entityManager.getCustomRepository(ArticleRepository);
-    const article = await repo.findBySlug(req.params.slug);
-    if (article == null) {
-      throw new StatusError('Article Not Found', 404);
-    }
-    if (req.user.id !== article.author.id) {
-      throw new StatusError('Forbidden', 403);
-    }
-    await repo.remove(article);
-    res.redirect('/');
+router.post('/:slug/delete', ensureLoggedIn(), async (req: Request, res: Response) => {
+  const repo = req.entityManager.getCustomRepository(ArticleRepository);
+  const article = await repo.findBySlug(req.params.slug);
+  if (article == null) {
+    throw new StatusError('Article Not Found', 404);
   }
-);
+  if (req.user.id !== article.author.id) {
+    throw new StatusError('Forbidden', 403);
+  }
+  await repo.remove(article);
+  res.redirect('/');
+});
 
 interface CommentPostBody {
   body: string;
 }
 
-router.post(
-  '/:slug/comments',
-  ensureLoggedIn(),
-  async (req: Request, res: Response) => {
-    const postBody = req.body as CommentPostBody;
+router.post('/:slug/comments', ensureLoggedIn(), async (req: Request, res: Response) => {
+  const postBody = req.body as CommentPostBody;
 
-    const articleRepo = req.entityManager.getCustomRepository(
-      ArticleRepository
-    );
-    const commentRepo = req.entityManager.getCustomRepository(
-      CommentRepository
-    );
+  const articleRepo = req.entityManager.getCustomRepository(ArticleRepository);
+  const commentRepo = req.entityManager.getCustomRepository(CommentRepository);
 
-    const article = await articleRepo.findBySlug(req.params.slug);
-    if (article == null) {
-      throw new StatusError('Article Not Found', 404);
-    }
-
-    const comment = new Comment();
-    comment.body = postBody.body;
-    comment.article = article;
-    comment.author = req.user;
-    try {
-      await commentRepo.validateAndSave(comment);
-    } catch (e) {
-      if (isValidationErrorArray(e)) {
-        for (const message of collectErrorMessages(e)) {
-          req.flash('error', message);
-        }
-      } else {
-        throw e;
-      }
-    }
-    res.redirect(`/article/${encodeURIComponent(article.slug)}`);
+  const article = await articleRepo.findBySlug(req.params.slug);
+  if (article == null) {
+    throw new StatusError('Article Not Found', 404);
   }
-);
+
+  const comment = new Comment();
+  comment.body = postBody.body;
+  comment.article = article;
+  comment.author = req.user;
+  try {
+    await commentRepo.validateAndSave(comment);
+  } catch (e) {
+    if (isValidationErrorArray(e)) {
+      for (const message of collectErrorMessages(e)) {
+        req.flash('error', message);
+      }
+    } else {
+      throw e;
+    }
+  }
+  res.redirect(`/article/${encodeURIComponent(article.slug)}`);
+});
 
 router.post(
   '/:slug/comments/:id/delete',
   ensureLoggedIn(),
   async (req: Request, res: Response) => {
-    const articleRepo = req.entityManager.getCustomRepository(
-      ArticleRepository
-    );
-    const commentRepo = req.entityManager.getCustomRepository(
-      CommentRepository
-    );
+    const articleRepo = req.entityManager.getCustomRepository(ArticleRepository);
+    const commentRepo = req.entityManager.getCustomRepository(CommentRepository);
 
     const article = await articleRepo.findBySlug(req.params.slug);
     const comment = await commentRepo.find(req.params.id, {
       selectArticle: true,
     });
 
-    if (
-      article == null ||
-      comment == null ||
-      article.id !== comment.article.id
-    ) {
+    if (article == null || comment == null || article.id !== comment.article.id) {
       throw new StatusError('Not found', 404);
     }
 

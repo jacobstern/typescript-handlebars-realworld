@@ -1,8 +1,4 @@
-import {
-  EntityRepository,
-  AbstractRepository,
-  SelectQueryBuilder,
-} from 'typeorm';
+import { EntityRepository, AbstractRepository, SelectQueryBuilder } from 'typeorm';
 import { Article } from '../entities/Article';
 import { validateOrReject } from 'class-validator';
 import { User } from '../entities/User';
@@ -55,10 +51,7 @@ export class ArticleRepository extends AbstractRepository<Article> {
     return query;
   }
 
-  private listFeedQuery(
-    user: User,
-    options: BaseOptions
-  ): SelectQueryBuilder<Article> {
+  private listFeedQuery(user: User, options: BaseOptions): SelectQueryBuilder<Article> {
     const query = this.baseQuery(options);
     query.innerJoin(
       'user_following_user',
@@ -94,16 +87,12 @@ export class ArticleRepository extends AbstractRepository<Article> {
     return await this.listFeedQuery(user, options).getMany();
   }
 
-  async listFeedAndCount(
-    user: User,
-    options: BaseOptions = {}
-  ): Promise<[Article[], number]> {
+  async listFeedAndCount(user: User, options: BaseOptions = {}): Promise<[Article[], number]> {
     return await this.listFeedQuery(user, options).getManyAndCount();
   }
 
   async listPopularTags(): Promise<string[]> {
-    const rawResult = await this.manager
-      .query(`select count(*) as tagCount, ut.tag
+    const rawResult = await this.manager.query(`select count(*) as tagCount, ut.tag
 from article, lateral unnest(article."tagList") as ut(tag)
 group by ut.tag
 order by tagCount desc limit 15`);

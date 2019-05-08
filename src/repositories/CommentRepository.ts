@@ -1,9 +1,4 @@
-import {
-  EntityRepository,
-  AbstractRepository,
-  FindConditions,
-  FindOneOptions,
-} from 'typeorm';
+import { EntityRepository, AbstractRepository, FindConditions, FindOneOptions } from 'typeorm';
 import { Comment } from '../entities/Comment';
 import { validateOrReject } from 'class-validator';
 import { Article } from '../entities/Article';

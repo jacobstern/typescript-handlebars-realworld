@@ -36,11 +36,9 @@ onReady(() => {
       return fetch(endpoint, { method })
         .then(res => res.json())
         .then(body => {
-          document
-            .querySelectorAll(`[data-favorite-button="${slug}"]`)
-            .forEach(button => {
-              updateButton(button, body.article);
-            });
+          document.querySelectorAll(`[data-favorite-button="${slug}"]`).forEach(button => {
+            updateButton(button, body.article);
+          });
         });
     });
   }
