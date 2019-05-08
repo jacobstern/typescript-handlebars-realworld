@@ -1,11 +1,4 @@
-/**
- * Analogue of `jQuery.ready()` for IE9 and beyond.
- */
-function onReady(callback) {
-  document.readyState === 'interactive' || document.readyState === 'complete'
-    ? callback()
-    : document.addEventListener('DOMContentLoaded', callback);
-}
+import { onReady } from '../page-lifecycle';
 
 function createTag(tagName) {
   const tag = document.createElement('span');
@@ -25,7 +18,7 @@ function createTag(tagName) {
 function registerRemoveTagHandler(tagElement) {
   const icon = tagElement.querySelector('i');
   if (icon) {
-    icon.addEventListener('click', function() {
+    icon.addEventListener('click', () => {
       const parent = tagElement.parentNode;
       if (parent) {
         parent.removeChild(tagElement);
@@ -34,7 +27,7 @@ function registerRemoveTagHandler(tagElement) {
   }
 }
 
-onReady(function() {
+onReady(() => {
   const tagInput = document.getElementById('tag-input');
   const tagList = document.getElementById('tag-list');
 
@@ -45,17 +38,15 @@ onReady(function() {
     }
   }
 
-  tagInput.addEventListener('keypress', function(event) {
-    if (event.keyCode === 13) {
-      if (event.target.value) {
-        event.preventDefault();
-        const tagName = event.target.value.trim();
-        if (tagName) {
-          const tagElement = createTag(tagName);
-          tagList.appendChild(tagElement);
-          registerRemoveTagHandler(tagElement);
-          event.target.value = '';
-        }
+  tagInput.addEventListener('keypress', event => {
+    if (event.keyCode === 13 && event.target.value) {
+      event.preventDefault();
+      const tagName = event.target.value.trim();
+      if (tagName) {
+        const tagElement = createTag(tagName);
+        tagList.appendChild(tagElement);
+        registerRemoveTagHandler(tagElement);
+        event.target.value = '';
       }
     }
   });

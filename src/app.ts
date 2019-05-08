@@ -82,7 +82,7 @@ const app = express();
 
 const env = process.env.NODE_ENV || 'development';
 app.locals.ENV = env;
-app.locals.ENV_DEVELOPMENT = env == 'development';
+app.locals.ENV_DEVELOPMENT = env === 'development';
 
 app.use(helmet());
 app.use(compression());
@@ -108,6 +108,7 @@ app.use('/settings', routes.settings);
 app.use('/editor', routes.editor);
 app.use('/article', routes.article);
 app.use('/profile', routes.profile);
+app.use('/api/articles', routes.apiArticles);
 
 app.use(
   (_req: Request, _res: Response, next: NextFunction): void => {

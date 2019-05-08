@@ -1,12 +1,14 @@
 import express, { Request, Response } from 'express';
 import { ArticleRepository } from '../repositories/ArticleRepository';
 import { Article } from '../entities/Article';
+import { User } from '../entities/User';
 
 const router = express.Router();
 
 type Filter = 'global' | 'following' | 'tag';
 
 router.get('/', async (req: Request, res: Response) => {
+  const user = req.user as User;
   const queryParams = req.query as Record<string, string>;
   const repo = req.entityManager.getCustomRepository(ArticleRepository);
 
@@ -48,6 +50,13 @@ router.get('/', async (req: Request, res: Response) => {
   const filterHash: Record<string, boolean> = {};
   filterHash[filter] = true;
 
+  const favoritesSet = new Set();
+  if (user != null) {
+    for (const favorite of await user.favorites) {
+      favoritesSet.add(favorite.slug);
+    }
+  }
+
   const [articles] = result;
 
   res.render('home', {
@@ -55,7 +64,10 @@ router.get('/', async (req: Request, res: Response) => {
     nav: { home: true },
     user: req.user,
     popularTags: await repo.listPopularTags(),
-    articles,
+    articles: articles.map(article => ({
+      ...article,
+      favorited: favoritesSet.has(article.slug),
+    })),
     filter: filterHash,
     tag,
   });

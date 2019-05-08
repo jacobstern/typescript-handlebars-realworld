@@ -5,6 +5,7 @@ import loginRoutes from './login';
 import profileRoutes from './profile';
 import registerRoutes from './register';
 import settingsRoutes from './settings';
+import apiArticlesRoutes from './api/articles';
 
 export default {
   article: articleRoutes,
@@ -14,4 +15,5 @@ export default {
   profile: profileRoutes,
   register: registerRoutes,
   settings: settingsRoutes,
+  apiArticles: apiArticlesRoutes,
 };

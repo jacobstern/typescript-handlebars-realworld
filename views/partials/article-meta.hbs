@@ -17,10 +17,19 @@
       Follow {{author.username}}
     </button>
     &nbsp;
-    <button class="btn btn-sm btn-outline-primary">
+    {{#if favorited}}
+      <button
+        class="btn btn-sm btn-primary" data-favorite-button="{{slug}}"
+        data-favorite-button-favorited="">
+    {{else}}
+      <button class="btn btn-sm btn-outline-primary" data-favorite-button="{{slug}}">
+    {{/if}}
       <i class="ion-heart"></i>
       &nbsp;
-      Favorite Article <span class="counter">({{favoritesCount}})</span>
+      <span data-favorite-button-text="">
+        {{#if favorited}}Unfavorite Article{{else}}Favorite Article{{/if}}
+      </span>
+      <span class="counter">(<span data-favorite-button-count="">{{favoritesCount}}</span>)</span>
     </button>
   {{/if}}
 </div>

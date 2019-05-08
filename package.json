@@ -4,8 +4,9 @@
   "description": "",
   "main": "build/server.js",
   "scripts": {
-    "preassets": "rimraf public/build",
+    "preassets": "yarn assets:clean",
     "assets": "parcel build 'assets/js/entry/*.js' --out-dir public/build --public-url ./",
+    "assets:clean": "rimraf public/build",
     "build": "yarn assets",
     "dev": "node ./scripts/dev.js",
     "typecheck": "tsc --noEmit",
@@ -77,11 +78,18 @@
     "passport": "^0.4.0",
     "passport-local": "^1.0.0",
     "pg": "^7.10.0",
+    "promise-polyfill": "^8.1.0",
     "reflect-metadata": "^0.1.10",
     "slug": "^1.1.0",
     "typeorm": "0.2.16",
     "typeorm-store": "^1.2.0",
     "typescript": "^3.4.5",
-    "uniqid": "^5.0.3"
-  }
+    "uniqid": "^5.0.3",
+    "whatwg-fetch": "^3.0.0"
+  },
+  "browserslist": [
+    "last 1 version",
+    "> 0.2%",
+    "not dead"
+  ]
 }

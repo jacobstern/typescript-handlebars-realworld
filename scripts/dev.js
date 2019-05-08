@@ -1,6 +1,5 @@
 const chalk = require('chalk');
 const ts = require('typescript');
-const globby = require('globby');
 const Bundler = require('parcel-bundler');
 const path = require('path');
 const { spawn } = require('child_process');
@@ -40,7 +39,7 @@ async function main() {
   const livereloadServer = livereload.createServer({
     exts: ['hbs', 'js'],
   });
-  livereloadServer.watch(path.resolve(rootDir, 'views/'));
+  livereloadServer.watch([path.resolve(rootDir, 'views/')]);
 
   const bundler = new Bundler('assets/js/entry/*.js', {
     outDir: path.resolve(rootDir, 'public/build/'),

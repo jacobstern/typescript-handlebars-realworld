@@ -1,8 +1,15 @@
 <div class="article-preview">
   <div class="article-meta">
     {{>article-author-widget}}
-    <button class="btn btn-outline-primary btn-sm pull-xs-right" {{#unless user}}disabled{{/unless}}>
-      <i class="ion-heart"></i> {{favoritesCount}}
+    {{#if favorited}}
+      <button
+        class="btn btn-primary btn-sm pull-xs-right" data-favorite-button="{{slug}}"
+        data-favorite-button-favorited="">
+    {{else}}
+      <button
+        class="btn btn-outline-primary btn-sm pull-xs-right" data-favorite-button="{{slug}}">
+    {{/if}}
+      <i class="ion-heart"></i> <span data-favorite-button-count="">{{favoritesCount}}</span>
     </button>
   </div>
   <a href="/article/{{slug}}" class="preview-link">
