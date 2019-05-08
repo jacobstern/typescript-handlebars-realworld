@@ -4,16 +4,16 @@
   "description": "",
   "main": "build/server.js",
   "scripts": {
-    "clean": "rimraf build/",
-    "lint": "eslint '**/*.js' '**/*.ts'",
-    "prebuild": "npm run clean",
-    "build": "tsc",
+    "preassets": "rimraf public/build",
+    "assets": "parcel build 'assets/js/entry/*.js' --out-dir public/build --public-url ./",
+    "build": "yarn assets",
     "dev": "node ./scripts/dev.js",
     "typecheck": "tsc --noEmit",
     "repl": "node --experimental-repl-await -r ts-node/register scripts/repl.js",
     "start": "ts-node src/server.ts",
     "typeorm": "ts-node ./node_modules/typeorm/cli.js",
     "typeorm:migrate": "ts-node ./node_modules/typeorm/cli.js migration:run -t=false",
+    "lint": "eslint '**/*.js' '**/*.ts'",
     "prettify": "prettier --write '**/*.js' '**/*.ts'"
   },
   "repository": {
@@ -31,10 +31,13 @@
     "@typescript-eslint/parser": "^1.7.0",
     "chalk": "^2.4.2",
     "eslint": "^5.16.0",
+    "eslint-plugin-compat": "^3.1.1",
+    "parcel-bundler": "^1.12.3",
     "prettier": "^1.17.0",
     "rimraf": "^2.6.3",
     "ts-node": "^8.1.0",
-    "ts-node-dev": "^1.0.0-pre.32"
+    "ts-node-dev": "^1.0.0-pre.32",
+    "yarn": "^1.15.2"
   },
   "dependencies": {
     "@types/bcrypt": "3.0.0",

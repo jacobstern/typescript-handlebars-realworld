@@ -13,10 +13,9 @@
     "@typescript-eslint/no-unnecessary-type-assertion": "error",
     "@typescript-eslint/no-unused-vars": [
       "warn",
-      { "argsIgnorePattern": "^_" }
+      { "argsIgnorePattern": "^_", "ignoreRestSiblings": true }
     ],
     "@typescript-eslint/unified-signatures": "warn",
-    "no-fallthrough": "error",
     "eqeqeq": ["error", "smart"]
   }
 }
