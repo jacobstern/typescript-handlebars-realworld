@@ -1,6 +1,9 @@
 import handlebars from 'handlebars';
 
 export function uc(arg: unknown) {
+  if (arg == null) {
+    return;
+  }
   if (typeof arg !== 'string') {
     throw new Error('uc helper requires a string argument');
   }

@@ -7,9 +7,11 @@ import {
   ManyToOne,
   Index,
   ManyToMany,
+  OneToMany,
 } from 'typeorm';
 import { User } from './User';
 import { IsNotEmpty } from 'class-validator';
+import { Comment } from './Comment';
 
 @Entity()
 @Index('article_tags_index', { synchronize: false }) // GIN index managed in migrations
@@ -53,4 +55,7 @@ export class Article {
 
   @Column({ default: 0 })
   favoritesCount: number;
+
+  @OneToMany(_type => Comment, comment => comment.article)
+  comments: Promise<Comment[]>;
 }

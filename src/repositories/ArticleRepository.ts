@@ -73,8 +73,8 @@ export class ArticleRepository extends AbstractRepository<Article> {
     return await this.manager.findOne(Article, { slug });
   }
 
-  async delete(article: Article): Promise<void> {
-    await this.manager.delete(Article, article);
+  async remove(article: Article): Promise<void> {
+    await this.manager.remove(Article, article);
   }
 
   async validateAndSave(article: Article): Promise<void> {

@@ -63,6 +63,14 @@ async function main() {
   });
   tsNodeDev.stdout.pipe(process.stdout);
   tsNodeDev.stderr.pipe(process.stderr);
+
+  const ensureProcessKilled = () => {
+    if (!tsNodeDev.killed) {
+      tsNodeDev.kill();
+    }
+  };
+
+  tsNodeDev.on('exit', ensureProcessKilled);
 }
 
 function formatDiagnostic(diagnostic) {

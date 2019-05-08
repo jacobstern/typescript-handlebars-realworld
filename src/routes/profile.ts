@@ -24,7 +24,11 @@ router.post(
     const userToFollow = await findUserByUsername(req.params.username);
 
     if (userToFollow === undefined) {
-      throw new StatusError('User Not Found', 404);
+      throw new StatusError('User not found', 404);
+    }
+
+    if (userToFollow.id === user.id) {
+      throw new StatusError('Reflexive follow is forbidden', 403);
     }
 
     await followUser(user, userToFollow);

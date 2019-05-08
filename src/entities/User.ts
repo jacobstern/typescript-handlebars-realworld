@@ -19,6 +19,7 @@ import {
 } from 'class-validator';
 import { Article } from './Article';
 import { findUserByEmail, findUserByUsername } from '../services/accounts';
+import { Comment } from './Comment';
 
 @ValidatorConstraint({ name: 'usernameAvailable', async: true })
 class UsernameAvailableConstraint implements ValidatorConstraintInterface {
@@ -73,7 +74,7 @@ class EmailAvailableConstraint implements ValidatorConstraintInterface {
 }
 
 @Entity()
-export class User extends BaseEntity {
+export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -109,6 +110,9 @@ export class User extends BaseEntity {
   @ManyToMany(_type => Article, article => article.favoritedBy)
   @JoinTable()
   favorites: Promise<Article[]>;
+
+  @ManyToMany(_type => Comment, comment => comment.author)
+  comments: Promise<Comment[]>;
 
   public async checkPassword(password: string): Promise<boolean> {
     return bcrypt.compare(password, this.password);

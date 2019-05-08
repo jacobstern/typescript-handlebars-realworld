@@ -13,7 +13,7 @@
     "repl": "node --experimental-repl-await -r ts-node/register scripts/repl.js",
     "start": "ts-node src/server.ts",
     "typeorm": "ts-node ./node_modules/typeorm/cli.js",
-    "typeorm:migrate": "ts-node ./node_modules/typeorm/cli.js migration:run -t=false",
+    "migrate": "ts-node ./node_modules/typeorm/cli.js migration:run -t=false",
     "lint": "eslint '**/*.js' '**/*.ts'",
     "prettify": "prettier --write '**/*.js' '**/*.ts'"
   },
