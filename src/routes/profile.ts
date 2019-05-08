@@ -75,6 +75,10 @@ router.get('/:username', async (req: Request, res: Response) => {
 
   let listOptions: ListOptions = {};
   switch (filter) {
+    case 'favorited':
+      listOptions = { favoritedBy: profile };
+      break;
+    default:
     case 'mine':
       listOptions = { author: profile };
       break;
@@ -95,11 +99,21 @@ router.get('/:username', async (req: Request, res: Response) => {
   const filterHash: Record<string, boolean> = {};
   filterHash[filter] = true;
 
+  const favoritesSet = new Set();
+  if (user != null) {
+    for (const favorite of await user.favorites) {
+      favoritesSet.add(favorite.slug);
+    }
+  }
+
   res.render('profile', {
     user,
     nav: { userProfile: isUserProfile },
     profile: { ...profile, following, mine: isUserProfile },
-    articles,
+    articles: articles.map(article => ({
+      ...article,
+      favorited: favoritesSet.has(article.slug),
+    })),
     filter: filterHash,
     postRedirect: req.originalUrl,
   });

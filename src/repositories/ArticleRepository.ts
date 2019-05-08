@@ -15,6 +15,7 @@ export interface BaseOptions {
 export interface ListOptions extends BaseOptions {
   tag?: string;
   author?: User;
+  favoritedBy?: User;
 }
 
 @EntityRepository(Article)
@@ -42,6 +43,14 @@ export class ArticleRepository extends AbstractRepository<Article> {
       }
     } else if (options.tag != null) {
       query.where(tagWhereClause, { tag: options.tag });
+    }
+    if (options.favoritedBy) {
+      query.innerJoin(
+        'user_favorites_article',
+        'favorites',
+        'favorites.userId = :userId AND favorites.articleId = article.id',
+        { userId: options.favoritedBy.id }
+      );
     }
     return query;
   }
