@@ -1,3 +1,6 @@
+import '@babel/polyfill';
+import 'whatwg-fetch';
+
 import { onReady } from '../page-lifecycle';
 
 function updateButton(button, article) {
@@ -31,27 +34,17 @@ onReady(() => {
       button.blur();
       const slug = button.dataset.favoriteButton;
       const endpoint = `/api/articles/${slug}/favorite`;
-      if (button.dataset.favoriteButtonFavorited != null) {
-        return fetch(endpoint, { method: 'DELETE' })
-          .then(res => res.json())
-          .then(body => {
-            document
-              .querySelectorAll(`[data-favorite-button="${slug}"]`)
-              .forEach(button => {
-                updateButton(button, body.article);
-              });
-          });
-      } else {
-        return fetch(endpoint, { method: 'POST' })
-          .then(res => res.json())
-          .then(body => {
-            document
-              .querySelectorAll(`[data-favorite-button="${slug}"]`)
-              .forEach(button => {
-                updateButton(button, body.article);
-              });
-          });
-      }
+      const favorited = button.dataset.favoriteButtonFavorited != null;
+      const method = favorited ? 'DELETE' : 'POST';
+      return fetch(endpoint, { method })
+        .then(res => res.json())
+        .then(body => {
+          document
+            .querySelectorAll(`[data-favorite-button="${slug}"]`)
+            .forEach(button => {
+              updateButton(button, body.article);
+            });
+        });
     });
   }
 });

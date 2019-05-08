@@ -28,6 +28,9 @@
   },
   "homepage": "https://github.com/jacobstern/typescript-handlebars-realworld#readme",
   "devDependencies": {
+    "@babel/core": "^7.0.0-0",
+    "@babel/polyfill": "^7.4.4",
+    "@babel/preset-env": "^7.4.4",
     "@typescript-eslint/eslint-plugin": "^1.7.0",
     "@typescript-eslint/parser": "^1.7.0",
     "chalk": "^2.4.2",
@@ -78,7 +81,6 @@
     "passport": "^0.4.0",
     "passport-local": "^1.0.0",
     "pg": "^7.10.0",
-    "promise-polyfill": "^8.1.0",
     "reflect-metadata": "^0.1.10",
     "slug": "^1.1.0",
     "typeorm": "0.2.16",
