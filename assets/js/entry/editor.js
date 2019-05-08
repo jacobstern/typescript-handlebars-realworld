@@ -1,6 +1,3 @@
-import '@babel/polyfill';
-import 'whatwg-fetch';
-
 import { onReady } from '../page-lifecycle';
 
 function createTag(tagName) {
