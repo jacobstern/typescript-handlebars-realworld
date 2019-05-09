@@ -39,7 +39,7 @@ onReady(() => {
   }
 
   tagInput.addEventListener('keypress', event => {
-    if (event.keyCode === 13 && event.target.value) {
+    if (event.keyCode === 13) {
       event.preventDefault();
       const tagName = event.target.value.trim();
       if (tagName) {

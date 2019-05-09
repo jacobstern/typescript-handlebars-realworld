@@ -1,11 +1,8 @@
 import express, { Request, Response } from 'express';
 import { ensureLoggedIn } from 'connect-ensure-login';
-import * as t from 'io-ts';
 import { StatusError } from '../errors';
-import { assertPostBodyType } from '../utils/assert-type';
 import { ArticleRepository } from '../repositories/ArticleRepository';
 import { generateSlug } from '../article-slugs';
-import { optional } from '../utils/type-combinators';
 import { Article } from '../entities/Article';
 import { isValidationErrorArray, collectErrorMessages } from '../utils/validation-errors';
 
@@ -35,16 +32,16 @@ router.get('/:slug', ensureLoggedIn(), async (req: Request, res: Response) => {
   });
 });
 
-const PostBodyType = t.type({
-  title: t.string,
-  description: t.string,
-  body: t.string,
-  tagList: optional(t.array(t.string)),
-});
+interface PostBody {
+  title: string;
+  description: string;
+  body: string;
+  tagList?: string[];
+}
 
 router.post('/', ensureLoggedIn(), async (req: Request, res: Response) => {
   const repo = req.entityManager.getCustomRepository(ArticleRepository);
-  const postBody = assertPostBodyType(PostBodyType, req.body);
+  const postBody = req.body as PostBody;
   const article = new Article();
   article.title = postBody.title;
   article.slug = generateSlug(postBody.title);
@@ -73,13 +70,13 @@ router.post('/', ensureLoggedIn(), async (req: Request, res: Response) => {
 router.post('/:slug', ensureLoggedIn(), async (req: Request, res: Response) => {
   const repo = req.entityManager.getCustomRepository(ArticleRepository);
   const article = await repo.findBySlug(req.params.slug);
+  const postBody = req.body as PostBody;
   if (article == null) {
     throw new StatusError('Article Not Found', 404);
   }
   if (req.user.id !== article.author.id) {
     throw new StatusError('Forbidden', 403);
   }
-  const postBody = assertPostBodyType(PostBodyType, req.body);
   if (postBody.title !== article.title) {
     article.title = postBody.title;
     article.slug = generateSlug(postBody.title);
