@@ -32,7 +32,6 @@ router.get('/:slug', async (req: Request, res: Response) => {
 
   res.render('article', {
     title: article.title,
-    user,
     article: {
       ...article,
       mine: user != null && user.id === article.author.id,

@@ -12,7 +12,6 @@ router.get('/', ensureLoggedIn(), (req: Request, res: Response) => {
   res.render('editor', {
     title: 'New post',
     nav: { newPost: true },
-    user: req.user,
     extraScripts: ['/build/editor.js'],
   });
 });
@@ -28,7 +27,6 @@ router.get('/:slug', ensureLoggedIn(), async (req: Request, res: Response) => {
   }
   res.render('editor', {
     title: 'Edit post',
-    user: req.user,
     article,
     extraScripts: ['/build/editor.js'],
   });
@@ -59,7 +57,6 @@ router.post('/', ensureLoggedIn(), async (req: Request, res: Response) => {
       res.render('editor', {
         title: 'New post',
         nav: { newPost: true },
-        user: req.user,
         article: postBody,
         errorMessages: collectErrorMessages(e),
         extraScripts: ['/build/editor.js'],
@@ -94,7 +91,6 @@ router.post('/:slug', ensureLoggedIn(), async (req: Request, res: Response) => {
     if (isValidationErrorArray(e)) {
       res.render('editor', {
         title: 'Edit post',
-        user: req.user,
         article: req.body,
         errorMessages: collectErrorMessages(e),
         extraScripts: ['/build/editor.js'],

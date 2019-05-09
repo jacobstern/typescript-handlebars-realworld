@@ -56,7 +56,6 @@ router.get('/:username', async (req: Request, res: Response) => {
   }
 
   res.render('profile', {
-    user,
     nav: { userProfile },
     profile: { ...profile, following, mine: userProfile },
     articles: articles.map(article => ({

@@ -108,7 +108,6 @@ router.get('/', async (req: Request, res: Response) => {
   res.render('home', {
     title: 'Home',
     nav: stringUnionHash('home'),
-    user: req.user,
     popularTags: await repo.listPopularTags(),
     articles: articles.map(article => ({
       ...article,

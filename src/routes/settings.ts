@@ -11,7 +11,7 @@ router.get('/', ensureLoggedIn(), (req: Request, res: Response) => {
   res.render('settings', {
     title: 'Settings',
     nav: { settings: true },
-    user: req.user,
+    profile: req.user,
   });
 });
 
@@ -43,7 +43,7 @@ router.post('/', ensureLoggedIn(), async (req: Request, res: Response) => {
         title: 'Settings',
         nav: { settings: true },
         errorMessages: collectErrorMessages(e),
-        user: req.body,
+        profile: req.body,
       });
     } else {
       throw e;

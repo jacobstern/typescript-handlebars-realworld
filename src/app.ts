@@ -112,6 +112,11 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use((req, res, next) => {
+  res.locals.user = req.user;
+  next();
+});
+
 for (const { path, router } of routeConfig) {
   app.use(path, router);
 }
@@ -132,7 +137,6 @@ app.use(
 
     res.status(statusCode).render('error', {
       error: req.app.get('env') === 'development' ? err : {},
-      user: req.user,
       statusCode,
       statusText: getStatusText(statusCode),
     });
