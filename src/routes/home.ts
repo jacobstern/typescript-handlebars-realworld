@@ -2,7 +2,7 @@ import express, { Request, Response } from 'express';
 import { ArticleRepository } from '../repositories/ArticleRepository';
 import { Article } from '../entities/Article';
 import { User } from '../entities/User';
-import { stringUnionHash } from '../utils/string-union-hash';
+import { stringUnionHash } from '../utils/handlebars-data';
 
 const router = express.Router();
 

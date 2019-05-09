@@ -1,14 +1,13 @@
 import express, { Request, Response } from 'express';
 import { ensureLoggedIn } from 'connect-ensure-login';
 import * as t from 'io-ts';
-import { collectErrorMessages } from '../utils/collect-error-messages';
 import { StatusError } from '../errors';
 import { assertPostBodyType } from '../utils/assert-type';
 import { ArticleRepository } from '../repositories/ArticleRepository';
 import { generateSlug } from '../article-slugs';
 import { optional } from '../utils/type-combinators';
 import { Article } from '../entities/Article';
-import { isValidationErrorArray } from '../utils/is-validation-error-array';
+import { isValidationErrorArray, collectErrorMessages } from '../utils/validation-errors';
 
 const router = express.Router();
 

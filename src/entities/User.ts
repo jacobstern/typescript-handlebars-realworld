@@ -5,7 +5,9 @@ import {
   OneToMany,
   ManyToMany,
   JoinTable,
-  BaseEntity,
+  BeforeInsert,
+  BeforeUpdate,
+  getConnection,
 } from 'typeorm';
 import bcrypt from 'bcrypt';
 import {
@@ -18,8 +20,8 @@ import {
   MinLength,
 } from 'class-validator';
 import { Article } from './Article';
-import { findUserByEmail, findUserByUsername } from '../services/accounts';
 import { Comment } from './Comment';
+import { UserRepository } from '../repositories/UserRepository';
 
 @ValidatorConstraint({ name: 'usernameAvailable', async: true })
 class UsernameAvailableConstraint implements ValidatorConstraintInterface {
@@ -31,8 +33,9 @@ class UsernameAvailableConstraint implements ValidatorConstraintInterface {
       // Short-circuit if username is clearly not valid
       return true;
     }
-    const found = await findUserByUsername(value);
-    if (found === undefined) {
+    const repo = getConnection().getCustomRepository(UserRepository);
+    const found = await repo.findByUsername(value);
+    if (found == null) {
       return true;
     }
     const user = args.object as Record<string, unknown>;
@@ -57,7 +60,8 @@ class EmailAvailableConstraint implements ValidatorConstraintInterface {
       // Validations don't short circuit, so just stop here if it's not a valid email
       return true;
     }
-    const found = await findUserByEmail(value);
+    const repo = getConnection().getCustomRepository(UserRepository);
+    const found = await repo.findByEmail(value);
     if (found == null) {
       return true;
     }
@@ -88,6 +92,7 @@ export class User {
   @Column({ unique: true, type: 'citext' })
   email: string;
 
+  @MinLength(8)
   @Column({ select: false })
   password: string;
 
@@ -114,7 +119,11 @@ export class User {
   @ManyToMany(_type => Comment, comment => comment.author)
   comments: Promise<Comment[]>;
 
-  public async checkPassword(password: string): Promise<boolean> {
-    return bcrypt.compare(password, this.password);
+  @BeforeInsert()
+  @BeforeUpdate()
+  async encryptPassword() {
+    if (this.password != null) {
+      this.password = await bcrypt.hash(this.password, 10);
+    }
   }
 }

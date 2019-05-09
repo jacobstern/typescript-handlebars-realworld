@@ -13,12 +13,12 @@ import { TypeormStore } from 'typeorm-store';
 import { getConnection } from 'typeorm';
 import { getStatusText } from 'http-status-codes';
 import { StatusError } from './errors';
-import { findUser, findUserByEmail } from './services/accounts';
 import { User } from './entities/User';
 import { Session } from './entities/Session';
 import { configureHandlebars } from './handlebars-instance';
-import routes from './routes';
+import { routeConfig } from './routes';
 import { requestEntityManager } from './middlewares/entity-manager-middleware';
+import { UserRepository } from './repositories/UserRepository';
 
 const viewInstance = expressHandlebars.create({
   defaultLayout: 'main.hbs',
@@ -30,9 +30,11 @@ passport.use(
   new PassportLocalStrategy(
     { usernameField: 'email', session: true },
     (email, password, cb) => {
-      findUserByEmail(email)
+      getConnection()
+        .getCustomRepository(UserRepository)
+        .findByEmailAndPassword(email, password)
         .then(user => {
-          if (user === undefined || !user.checkPassword(password)) {
+          if (user == null) {
             return cb(null, false);
           }
           return cb(null, user);
@@ -47,7 +49,9 @@ passport.serializeUser<User, User['id']>((user, cb) => {
 });
 
 passport.deserializeUser<User, User['id']>((id, cb) => {
-  findUser(id)
+  getConnection()
+    .getCustomRepository(UserRepository)
+    .find(id)
     .then(user => {
       return cb(null, user);
     })
@@ -95,15 +99,9 @@ app.use(passport.session());
 app.engine('hbs', viewInstance.engine);
 app.set('view engine', 'hbs');
 
-app.use('/', routes.home);
-app.use('/home', routes.home);
-app.use('/login', routes.login);
-app.use('/register', routes.register);
-app.use('/settings', routes.settings);
-app.use('/editor', routes.editor);
-app.use('/article', routes.article);
-app.use('/profile', routes.profile);
-app.use('/api/articles', routes.apiArticles);
+for (const { path, router } of routeConfig) {
+  app.use(path, router);
+}
 
 app.use(
   (_req: Request, _res: Response, next: NextFunction): void => {
@@ -111,7 +109,6 @@ app.use(
   }
 );
 
-// 500 - error handler
 app.use(
   (err: unknown, req: Request, res: Response, next: NextFunction): void => {
     if (res.headersSent) {

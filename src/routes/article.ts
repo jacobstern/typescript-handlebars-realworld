@@ -6,8 +6,7 @@ import { ArticleRepository } from '../repositories/ArticleRepository';
 import { User } from '../entities/User';
 import { CommentRepository } from '../repositories/CommentRepository';
 import { Comment } from '../entities/Comment';
-import { isValidationErrorArray } from '../utils/is-validation-error-array';
-import { collectErrorMessages } from '../utils/collect-error-messages';
+import { isValidationErrorArray, collectErrorMessages } from '../utils/validation-errors';
 
 const router = express.Router();
 

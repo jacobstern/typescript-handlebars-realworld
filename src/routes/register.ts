@@ -1,8 +1,7 @@
 import express, { Request, Response, NextFunction } from 'express';
-import { createUser } from '../services/accounts';
-import { UserForm } from '../forms/UserForm';
-import { MultiValidationError } from '../forms/MultiValidationError';
-import { collectErrorMessages } from '../utils/collect-error-messages';
+import { User } from '../entities/User';
+import { UserRepository } from '../repositories/UserRepository';
+import { isValidationErrorArray, collectErrorMessages } from '../utils/validation-errors';
 
 const router = express.Router();
 
@@ -13,10 +12,21 @@ router.get('/', (_req: Request, res: Response) => {
   });
 });
 
+interface PostBody {
+  username: string;
+  email: string;
+  password: string;
+}
+
 router.post('/', async (req: Request, res: Response, next: NextFunction) => {
+  const repo = req.entityManager.getCustomRepository(UserRepository);
+  const postBody = req.body as PostBody;
+  const user = new User();
+  user.username = postBody.username;
+  user.email = postBody.email;
+  user.password = postBody.password;
   try {
-    const form = await UserForm.validate(req.body);
-    const user = await createUser(form);
+    await repo.validateAndSave(user);
     req.login(user, err => {
       if (err) {
         next(err);
@@ -24,11 +34,11 @@ router.post('/', async (req: Request, res: Response, next: NextFunction) => {
       res.redirect('/');
     });
   } catch (e) {
-    if (e instanceof MultiValidationError) {
+    if (isValidationErrorArray(e)) {
       res.render('register/index', {
         title: 'Sign up',
         nav: { register: true },
-        errorMessages: collectErrorMessages(e.errors),
+        errorMessages: collectErrorMessages(e),
         register: req.body,
       });
     } else {

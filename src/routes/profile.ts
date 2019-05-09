@@ -1,17 +1,19 @@
 import express, { Request, Response } from 'express';
-import { findUserByUsername, followUser, unfollowUser } from '../services/accounts';
 import { StatusError } from '../errors';
 import { User } from '../entities/User';
 import { ensureLoggedIn } from 'connect-ensure-login';
 import { ArticleRepository, ListOptions } from '../repositories/ArticleRepository';
+import { UserRepository } from '../repositories/UserRepository';
+import { stringUnionHash } from '../utils/handlebars-data';
 
 const router = express.Router();
 
 type Filter = 'mine' | 'favorited';
 
 router.post('/:username/follow', ensureLoggedIn(), async (req: Request, res: Response) => {
+  const repo = req.entityManager.getCustomRepository(UserRepository);
   const user = req.user as User;
-  const userToFollow = await findUserByUsername(req.params.username);
+  const userToFollow = await repo.findByUsername(req.params.username);
 
   if (userToFollow === undefined) {
     throw new StatusError('User not found', 404);
@@ -21,7 +23,11 @@ router.post('/:username/follow', ensureLoggedIn(), async (req: Request, res: Res
     throw new StatusError('Reflexive follow is forbidden', 403);
   }
 
-  await followUser(user, userToFollow);
+  const following = await user.following;
+  if (!following.some(user => user.id === userToFollow.id)) {
+    following.push(userToFollow);
+    await repo.validateAndSave(user);
+  }
 
   if (req.query.redirect) {
     res.redirect(req.query.redirect);
@@ -31,14 +37,20 @@ router.post('/:username/follow', ensureLoggedIn(), async (req: Request, res: Res
 });
 
 router.post('/:username/unfollow', ensureLoggedIn(), async (req: Request, res: Response) => {
+  const repo = req.entityManager.getCustomRepository(UserRepository);
   const user = req.user as User;
-  const userToUnfollow = await findUserByUsername(req.params.username);
+  const userToUnfollow = await repo.findByUsername(req.params.username);
 
   if (userToUnfollow === undefined) {
     throw new StatusError('User Not Found', 404);
   }
 
-  await unfollowUser(user, userToUnfollow);
+  const following = await user.following;
+  const index = following.findIndex(user => user.id === userToUnfollow.id);
+  if (index > -1) {
+    following.splice(index, 1);
+    await repo.validateAndSave(user);
+  }
 
   if (req.query.redirect) {
     res.redirect(req.query.redirect);
@@ -48,9 +60,10 @@ router.post('/:username/unfollow', ensureLoggedIn(), async (req: Request, res: R
 });
 
 router.get('/:username', async (req: Request, res: Response) => {
-  const repo = req.entityManager.getCustomRepository(ArticleRepository);
+  const userRepo = req.entityManager.getCustomRepository(UserRepository);
+  const articleRepo = req.entityManager.getCustomRepository(ArticleRepository);
   const user = req.user as User;
-  const profile = await findUserByUsername(req.params.username);
+  const profile = await userRepo.findByUsername(req.params.username);
 
   if (profile === undefined) {
     throw new StatusError('User Not Found', 404);
@@ -73,20 +86,17 @@ router.get('/:username', async (req: Request, res: Response) => {
       break;
   }
 
-  const articles = await repo.list(listOptions);
+  const articles = await articleRepo.list(listOptions);
 
-  let isUserProfile = false;
+  let userProfile = false;
   let following = false;
 
   if (user) {
-    isUserProfile = user.id === profile.id;
-    if (!isUserProfile) {
+    userProfile = user.id === profile.id;
+    if (!userProfile) {
       following = (await user.following).some(user => user.id === profile.id);
     }
   }
-
-  const filterHash: Record<string, boolean> = {};
-  filterHash[filter] = true;
 
   const favoritesSet = new Set();
   if (user != null) {
@@ -97,13 +107,13 @@ router.get('/:username', async (req: Request, res: Response) => {
 
   res.render('profile', {
     user,
-    nav: { userProfile: isUserProfile },
-    profile: { ...profile, following, mine: isUserProfile },
+    nav: { userProfile },
+    profile: { ...profile, following, mine: userProfile },
     articles: articles.map(article => ({
       ...article,
       favorited: favoritesSet.has(article.slug),
     })),
-    filter: filterHash,
+    filter: stringUnionHash(filter),
     postRedirect: req.originalUrl,
   });
 });
