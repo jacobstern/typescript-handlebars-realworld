@@ -15,6 +15,23 @@
     {{/if}}
 
     <meta name="csrf-token" content="{{csrfToken}}">
+
+    {{#if NO_TURBOLINKS}}
+      <script type="text/javascript">
+        var env = window.env = window.env || {};
+        env.NO_TURBOLINKS = true;
+      </script>
+    {{/if}}
+
+    <script src="/build/polyfills.js" defer data-turbolinks-eval="false"></script>
+    <script src="/build/main.js" defer></script>
+
+    {{#each extraScripts}}
+      <script src="{{this}}" defer></script>
+    {{/each}}
+
+
+    <meta name="turbolinks-cache-control" content="no-preview">
   </head>
   <body>
 

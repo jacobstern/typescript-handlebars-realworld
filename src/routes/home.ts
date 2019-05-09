@@ -117,6 +117,7 @@ router.get('/', async (req: Request, res: Response) => {
     filter: stringUnionHash(filter),
     tag,
     pageLinks: makePageLinks(page, getTotalPages(count), baseUrl),
+    extraScripts: ['/build/favorite-button.js'],
   });
 });
 

@@ -1,8 +1,10 @@
 /**
- * Analogue of `jQuery.ready()` for IE9 and beyond.
+ * Analogue of `jQuery.ready()`.
  */
 export function onReady(callback) {
-  document.readyState === 'interactive' || document.readyState === 'complete'
-    ? callback()
-    : document.addEventListener('DOMContentLoaded', callback);
+  if (document.readyState === 'interactive' || document.readyState === 'complete') {
+    callback();
+  }
+  // Register a handler for initial load as well as loading subsequent pages
+  document.addEventListener('turbolinks:load', callback);
 }

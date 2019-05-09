@@ -13,6 +13,7 @@ router.get('/', ensureLoggedIn(), (req: Request, res: Response) => {
     title: 'New post',
     nav: { newPost: true },
     user: req.user,
+    extraScripts: ['/build/editor.js'],
   });
 });
 
@@ -29,6 +30,7 @@ router.get('/:slug', ensureLoggedIn(), async (req: Request, res: Response) => {
     title: 'Edit post',
     user: req.user,
     article,
+    extraScripts: ['/build/editor.js'],
   });
 });
 
@@ -60,6 +62,7 @@ router.post('/', ensureLoggedIn(), async (req: Request, res: Response) => {
         user: req.user,
         article: postBody,
         errorMessages: collectErrorMessages(e),
+        extraScripts: ['/build/editor.js'],
       });
     } else {
       throw e;
@@ -94,6 +97,7 @@ router.post('/:slug', ensureLoggedIn(), async (req: Request, res: Response) => {
         user: req.user,
         article: req.body,
         errorMessages: collectErrorMessages(e),
+        extraScripts: ['/build/editor.js'],
       });
     } else {
       throw e;
