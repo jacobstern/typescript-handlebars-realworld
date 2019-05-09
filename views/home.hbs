@@ -41,6 +41,18 @@
         {{else}}
           <div class="article-preview">No articles are here... yet.</div>
         {{/each}}
+
+        {{#if pageLinks}}
+          <nav>
+            <ul class="pagination">
+              {{#each pageLinks}}
+                <li class="page-item {{#if active}}active{{/if}}">
+                  <a class="page-link" href="{{url}}">{{page}}</a>
+                </li>
+              {{/each}}
+            </ul>
+          </nav>
+        {{/if}}
       </div>
   
       <div class="col-md-3">

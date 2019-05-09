@@ -77,6 +77,7 @@ router.post('/:slug/comments', ensureLoggedIn(), async (req: Request, res: Respo
   comment.body = postBody.body;
   comment.article = article;
   comment.author = req.user;
+
   try {
     await commentRepo.validateAndSave(comment);
   } catch (e) {
