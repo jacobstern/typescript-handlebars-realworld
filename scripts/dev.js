@@ -2,7 +2,7 @@ const chalk = require('chalk');
 const ts = require('typescript');
 const Bundler = require('parcel-bundler');
 const path = require('path');
-const { spawn } = require('child_process');
+const child_process = require('child_process');
 const livereload = require('livereload');
 
 const formatHost = {
@@ -11,6 +11,20 @@ const formatHost = {
   getNewLine: () => ts.sys.newLine,
 };
 
+/**
+ * This script does several things:
+ *
+ * - Starts `ts-node-dev` for the application via `child_process.spawn()` (since
+ *   it doesn't have a Node API). For performance `ts-node-dev` is run with
+ *   `--transpileOnly` which skips the `tsc` type-checking step.
+ * - Starts a TypeScript watcher process that emits type-checking errors
+ * - Starts a Parcel builder process to build ES8 JavaScript assets for the
+ *   frontend
+ * - Runs a `livereload` server to refresh the page when a template file is
+ *   edited, the webserver is restarted, or when an assets build finishes
+ *
+ * Invoke with `yarn dev` and you're off to the races!
+ */
 async function main() {
   const rootDir = path.resolve(__dirname, '..');
 
@@ -46,7 +60,7 @@ async function main() {
   });
   await bundler.bundle();
 
-  const tsNodeDev = spawn(
+  const tsNodeDev = child_process.spawn(
     'ts-node-dev',
     '--respawn --transpileOnly --no-notify --debounce 800 -- src/server.ts'.split(/\s+/)
   );

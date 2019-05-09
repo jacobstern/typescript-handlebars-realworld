@@ -3,6 +3,7 @@ import { ensureLoggedIn } from 'connect-ensure-login';
 import { User } from '../entities/User';
 import { UserRepository } from '../repositories/UserRepository';
 import { isValidationErrorArray, collectErrorMessages } from '../utils/validation-errors';
+import { NextFunction } from 'connect';
 
 const router = express.Router();
 
@@ -50,9 +51,13 @@ router.post('/', ensureLoggedIn(), async (req: Request, res: Response) => {
   }
 });
 
-router.post('/logout', ensureLoggedIn(), (req: Request, res: Response) => {
-  req.logout();
-  res.redirect('/');
+router.get('/logout', ensureLoggedIn(), (req: Request, res: Response, next: NextFunction) => {
+  req.session.destroy(err => {
+    if (err) {
+      next(err);
+    }
+    res.redirect('/');
+  });
 });
 
 export default router;

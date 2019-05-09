@@ -1,4 +1,5 @@
 import { onReady } from '../page-lifecycle';
+import { fetchWithCsrf } from '../fetch';
 
 function updateButton(button, article) {
   const text = button.querySelector('[data-favorite-button-text]');
@@ -33,7 +34,7 @@ onReady(() => {
       const endpoint = `/api/articles/${slug}/favorite`;
       const favorited = button.dataset.favoriteButtonFavorited != null;
       const method = favorited ? 'DELETE' : 'POST';
-      return fetch(endpoint, { method })
+      return fetchWithCsrf(endpoint, { method })
         .then(res => res.json())
         .then(body => {
           document.querySelectorAll(`[data-favorite-button="${slug}"]`).forEach(button => {

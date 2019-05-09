@@ -49,6 +49,7 @@
               Post Comment
               </button>
             </div>
+            <input type="hidden" name="_csrf" value="{{csrfToken}}">
           </form>
         {{/if}}
 
@@ -72,7 +73,9 @@
                   </button>
                   <form
                     style="visibility:collapse" id="delete-comment-form"
-                    action="/article/{{../article.slug}}/comments/{{id}}/delete" method="POST"></form>
+                    action="/article/{{../article.slug}}/comments/{{id}}/delete" method="POST">
+                    <input type="hidden" name="_csrf" value="{{csrfToken}}">
+                  </form>
                 </span>
               {{/if}}
             </div>
@@ -85,6 +88,7 @@
   <form
     id="delete-post-form" action="/article/{{article.slug}}/delete"
     method="POST" style="visibility: collapse">
+    <input type="hidden" name="_csrf" value="{{csrfToken}}">
   </form>
 </div>
 

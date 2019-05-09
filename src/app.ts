@@ -10,6 +10,7 @@ import helmet from 'helmet';
 import logger from 'morgan';
 import flash from 'connect-flash';
 import favicon from 'serve-favicon';
+import csrf from 'csurf';
 import { TypeormStore } from 'typeorm-store';
 import { getConnection } from 'typeorm';
 import { getStatusText } from 'http-status-codes';
@@ -90,6 +91,7 @@ app.use(compression());
 app.use(express.urlencoded({ extended: true }));
 app.use(logger('dev'));
 app.use(cookieParser());
+app.use(csrf({ cookie: true }));
 app.use(flash());
 app.use(sessionMiddleware);
 app.use(express.static(path.resolve(__dirname, '../public')));
@@ -100,6 +102,11 @@ app.use(passport.session());
 
 app.engine('hbs', viewInstance.engine);
 app.set('view engine', 'hbs');
+
+app.use((req, res, next) => {
+  res.locals.csrfToken = req.csrfToken();
+  next();
+});
 
 for (const { path, router } of routeConfig) {
   app.use(path, router);

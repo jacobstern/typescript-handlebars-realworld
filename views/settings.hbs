@@ -42,17 +42,15 @@
               Update Settings
             </button>
           </fieldset>
+          <input type="hidden" name="_csrf" value="{{csrfToken}}">
         </form>
 
         <hr />
 
-        <form action="/settings/logout" method="POST">
-          <button class="btn btn-outline-danger">
-            Or click here to logout.
-          </button>
-        </form>
+        <a href="/settings/logout" class="btn btn-outline-danger">
+          Or click here to logout.
+        </a>
       </div>
-
     </div>
   </div>
 </div>

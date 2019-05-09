@@ -25,6 +25,7 @@
             <form
               id="follow-form" action="/profile/{{uc profile.username}}/follow?redirect={{uc postRedirect}}"
               method="POST" style="visibility: collapse">
+              <input type="hidden" name="_csrf" value="{{csrfToken}}">
             </form>
             {{#if profile.following}}
               <button
