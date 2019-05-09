@@ -1,3 +1,7 @@
+/**
+ * `GeneralConfig` as in stuff other than database configuration which is
+ * managed in `ormconfig.js`.
+ */
 export interface GeneralConfig {
   cookieSecret: string;
   morganPreset: string;
