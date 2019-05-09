@@ -9,6 +9,7 @@ import expressHandlebars from 'express-handlebars';
 import helmet from 'helmet';
 import logger from 'morgan';
 import flash from 'connect-flash';
+import favicon from 'serve-favicon';
 import { TypeormStore } from 'typeorm-store';
 import { getConnection } from 'typeorm';
 import { getStatusText } from 'http-status-codes';
@@ -83,6 +84,7 @@ const env = process.env.NODE_ENV || 'development';
 app.locals.ENV = env;
 app.locals.ENV_DEVELOPMENT = env === 'development';
 
+app.use(favicon(path.resolve(__dirname, '../public/favicon.ico')));
 app.use(helmet());
 app.use(compression());
 app.use(express.urlencoded({ extended: true }));
