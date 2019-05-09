@@ -20,9 +20,12 @@ router.get('/:slug', async (req: Request, res: Response) => {
   }
 
   let favorited = false;
+  let following = false;
+
   if (user) {
     const favorites = await user.favorites;
     favorited = favorites.some(favorite => favorite.id === article.id);
+    following = (await user.following).some(user => user.id === article.author.id);
   }
 
   const comments = await commentRepo.list({ article });
@@ -39,6 +42,10 @@ router.get('/:slug', async (req: Request, res: Response) => {
         ...comment,
         mine: user != null && comment.author.id === user.id,
       })),
+      author: {
+        ...article.author,
+        following,
+      },
     },
     errorMessages: req.flash('error'),
   });

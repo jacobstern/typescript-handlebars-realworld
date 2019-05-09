@@ -10,55 +10,6 @@ const router = express.Router();
 
 type Filter = 'mine' | 'favorited';
 
-router.post('/:username/follow', ensureLoggedIn(), async (req: Request, res: Response) => {
-  const repo = req.entityManager.getCustomRepository(UserRepository);
-  const user = req.user as User;
-  const userToFollow = await repo.findByUsername(req.params.username);
-
-  if (userToFollow === undefined) {
-    throw new StatusError('User not found', 404);
-  }
-
-  if (userToFollow.id === user.id) {
-    throw new StatusError('Reflexive follow is forbidden', 403);
-  }
-
-  const following = await user.following;
-  if (!following.some(user => user.id === userToFollow.id)) {
-    following.push(userToFollow);
-    await repo.validateAndSave(user);
-  }
-
-  if (req.query.redirect) {
-    res.redirect(req.query.redirect);
-  } else {
-    res.redirect(`/profile/${encodeURIComponent(userToFollow.username)}`);
-  }
-});
-
-router.post('/:username/unfollow', ensureLoggedIn(), async (req: Request, res: Response) => {
-  const repo = req.entityManager.getCustomRepository(UserRepository);
-  const user = req.user as User;
-  const userToUnfollow = await repo.findByUsername(req.params.username);
-
-  if (userToUnfollow === undefined) {
-    throw new StatusError('User Not Found', 404);
-  }
-
-  const following = await user.following;
-  const index = following.findIndex(user => user.id === userToUnfollow.id);
-  if (index > -1) {
-    following.splice(index, 1);
-    await repo.validateAndSave(user);
-  }
-
-  if (req.query.redirect) {
-    res.redirect(req.query.redirect);
-  } else {
-    res.redirect(`/profile/${encodeURIComponent(userToUnfollow.username)}`);
-  }
-});
-
 router.get('/:username', async (req: Request, res: Response) => {
   const userRepo = req.entityManager.getCustomRepository(UserRepository);
   const articleRepo = req.entityManager.getCustomRepository(ArticleRepository);

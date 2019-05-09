@@ -7,6 +7,7 @@ import profileRoutes from './profile';
 import registerRoutes from './register';
 import settingsRoutes from './settings';
 import articlesApiRoutes from './api/articles';
+import profilesApiRoutes from './api/profiles';
 
 export interface RouteConfig {
   path: string;
@@ -49,5 +50,9 @@ export const routeConfig: RouteConfig[] = [
   {
     path: '/api/articles',
     router: articlesApiRoutes,
+  },
+  {
+    path: '/api/profiles',
+    router: profilesApiRoutes,
   },
 ];
