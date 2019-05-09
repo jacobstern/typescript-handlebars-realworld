@@ -16,12 +16,16 @@
 
     <meta name="csrf-token" content="{{csrfToken}}">
 
-    {{#if NO_TURBOLINKS}}
-      <script type="text/javascript">
-        var env = window.env = window.env || {};
-        env.NO_TURBOLINKS = true;
-      </script>
-    {{/if}}
+    <script type="text/javascript">
+      var process = window.process = window.process || {} 
+      var env = window.process.env = window.process.env || {};
+      var updates = {{{ENV_JSON}}};
+      // Inspired by Create React App solution
+      // https://facebook.github.io/create-react-app/docs/adding-custom-environment-variables
+      Object.keys(updates).forEach(function (key) {
+        env[key] = updates[key];
+      })
+    </script>
 
     <script src="/build/polyfills.js" defer data-turbolinks-eval="false"></script>
     <script src="/build/main.js" defer></script>

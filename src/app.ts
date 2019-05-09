@@ -21,9 +21,16 @@ import { configureHandlebars } from './handlebars-instance';
 import { routeConfig } from './routes';
 import { requestEntityManager } from './middlewares/entity-manager-middleware';
 import { UserRepository } from './repositories/UserRepository';
-import { getGeneralConfig } from './config';
+import { getGeneralConfig, GeneralConfig } from './config';
 
 const config = getGeneralConfig();
+
+function getBrowserEnv(config: GeneralConfig) {
+  return {
+    PORT: config.port,
+    NO_TURBOLINKS: config.noTurbolinks,
+  };
+}
 
 const viewInstance = expressHandlebars.create({
   defaultLayout: 'main.hbs',
@@ -87,7 +94,9 @@ const app = express();
 const env = process.env.NODE_ENV || 'development';
 app.locals.ENV = env;
 app.locals.ENV_DEVELOPMENT = env === 'development';
-app.locals.NO_TURBOLINKS = config.noTurbolinks;
+app.locals.ENV_JSON = JSON.stringify(getBrowserEnv(config));
+
+app.set('port', config.port);
 
 app.use(favicon(path.resolve(__dirname, '../public/favicon.ico')));
 app.use(helmet());

@@ -1,16 +1,11 @@
-let config;
+const env = require('getenv');
 
-function demandEnvVar(key) {
-  if (!(key in process.env)) {
-    throw new Error(`Missing required environment variable ${key}`);
-  }
-  return process.env[key];
-}
+let config;
 
 if (process.env.NODE_ENV === 'production') {
   config = {
     type: 'postgres',
-    url: demandEnvVar('DATABASE_URL'),
+    url: env('DATABASE_URL'),
     synchronize: false,
     migrationsRun: true,
     logging: false,
