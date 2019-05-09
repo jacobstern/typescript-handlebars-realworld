@@ -21,6 +21,9 @@ import { configureHandlebars } from './handlebars-instance';
 import { routeConfig } from './routes';
 import { requestEntityManager } from './middlewares/entity-manager-middleware';
 import { UserRepository } from './repositories/UserRepository';
+import { getGeneralConfig } from './config';
+
+const config = getGeneralConfig();
 
 const viewInstance = expressHandlebars.create({
   defaultLayout: 'main.hbs',
@@ -65,7 +68,7 @@ const sessionMiddleware = (req: Request, res: Response, next: NextFunction) => {
   // Lazy initialize middleware since it requires an active TypeORM connection
   if (sessionInstance === undefined) {
     sessionInstance = session({
-      secret: 'keyboard cat',
+      secret: config.cookieSecret,
       resave: false,
       saveUninitialized: false,
       cookie: {
@@ -89,7 +92,7 @@ app.use(favicon(path.resolve(__dirname, '../public/favicon.ico')));
 app.use(helmet());
 app.use(compression());
 app.use(express.urlencoded({ extended: true }));
-app.use(logger('dev'));
+app.use(logger(config.morganPreset));
 app.use(cookieParser());
 app.use(csrf({ cookie: true }));
 app.use(flash());

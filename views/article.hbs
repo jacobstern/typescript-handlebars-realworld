@@ -74,7 +74,7 @@
                   <form
                     style="visibility:collapse" id="delete-comment-form"
                     action="/article/{{../article.slug}}/comments/{{id}}/delete" method="POST">
-                    <input type="hidden" name="_csrf" value="{{csrfToken}}">
+                    <input type="hidden" name="_csrf" value="{{../csrfToken}}">
                   </form>
                 </span>
               {{/if}}
