@@ -24,23 +24,26 @@ function updateButton(button, article) {
   }
 }
 
+function handleFavoriteButtonClick(event) {
+  const button = event.currentTarget;
+  event.preventDefault();
+  button.blur();
+  const slug = button.dataset.favoriteButton;
+  const endpoint = `/api/articles/${slug}/favorite`;
+  const favorited = button.dataset.favoriteButtonFavorited != null;
+  const method = favorited ? 'DELETE' : 'POST';
+  return fetchWithCsrf(endpoint, { method })
+    .then(res => res.json())
+    .then(body => {
+      document.querySelectorAll(`[data-favorite-button="${slug}"]`).forEach(button => {
+        updateButton(button, body.article);
+      });
+    });
+}
+
 onReady(() => {
   const favoriteButtons = document.querySelectorAll('[data-favorite-button]');
   for (const button of favoriteButtons) {
-    button.addEventListener('click', event => {
-      event.preventDefault();
-      button.blur();
-      const slug = button.dataset.favoriteButton;
-      const endpoint = `/api/articles/${slug}/favorite`;
-      const favorited = button.dataset.favoriteButtonFavorited != null;
-      const method = favorited ? 'DELETE' : 'POST';
-      return fetchWithCsrf(endpoint, { method })
-        .then(res => res.json())
-        .then(body => {
-          document.querySelectorAll(`[data-favorite-button="${slug}"]`).forEach(button => {
-            updateButton(button, body.article);
-          });
-        });
-    });
+    button.addEventListener('click', handleFavoriteButtonClick);
   }
 });

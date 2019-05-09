@@ -15,24 +15,27 @@ function updateButton(button, profile) {
   }
 }
 
+function handleFollowButtonClick(event) {
+  const button = event.currentTarget;
+  event.preventDefault();
+  button.blur();
+  const username = button.dataset.profile;
+  const endpoint = `/api/profiles/${username}/follow`;
+  const following = button.dataset.following != null;
+  const method = following ? 'DELETE' : 'POST';
+  return fetchWithCsrf(endpoint, { method })
+    .then(res => res.json())
+    .then(body => {
+      const selector = `[data-follow-button][data-profile="${username}"]`;
+      document.querySelectorAll(selector).forEach(button => {
+        updateButton(button, body.profile);
+      });
+    });
+}
+
 onReady(() => {
   const followButtons = document.querySelectorAll('[data-follow-button]');
   for (const button of followButtons) {
-    button.addEventListener('click', event => {
-      event.preventDefault();
-      button.blur();
-      const username = button.dataset.profile;
-      const endpoint = `/api/profiles/${username}/follow`;
-      const following = button.dataset.following != null;
-      const method = following ? 'DELETE' : 'POST';
-      return fetchWithCsrf(endpoint, { method })
-        .then(res => res.json())
-        .then(body => {
-          const selector = `[data-follow-button][data-profile="${username}"]`;
-          document.querySelectorAll(selector).forEach(button => {
-            updateButton(button, body.profile);
-          });
-        });
-    });
+    button.addEventListener('click', handleFollowButtonClick);
   }
 });

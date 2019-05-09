@@ -48,6 +48,7 @@ router.get('/:slug', async (req: Request, res: Response) => {
       },
     },
     errorMessages: req.flash('error'),
+    extraScripts: ['/build/favorite-button.js', '/build/follow-button.js'],
   });
 });
 

@@ -87,6 +87,7 @@ const app = express();
 const env = process.env.NODE_ENV || 'development';
 app.locals.ENV = env;
 app.locals.ENV_DEVELOPMENT = env === 'development';
+app.locals.NO_TURBOLINKS = config.noTurbolinks;
 
 app.use(favicon(path.resolve(__dirname, '../public/favicon.ico')));
 app.use(helmet());

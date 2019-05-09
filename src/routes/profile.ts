@@ -1,7 +1,6 @@
 import express, { Request, Response } from 'express';
 import { StatusError } from '../errors';
 import { User } from '../entities/User';
-import { ensureLoggedIn } from 'connect-ensure-login';
 import { ArticleRepository, ListOptions } from '../repositories/ArticleRepository';
 import { UserRepository } from '../repositories/UserRepository';
 import { stringUnionHash } from '../utils/handlebars-data';
@@ -66,6 +65,7 @@ router.get('/:username', async (req: Request, res: Response) => {
     })),
     filter: stringUnionHash(filter),
     postRedirect: req.originalUrl,
+    extraScripts: ['/build/favorite-button.js', '/build/follow-button.js'],
   });
 });
 
