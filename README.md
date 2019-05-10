@@ -1,19 +1,31 @@
-# typescript-handlebars-realworld
+# ![RealWorld Example App](logo.png)
+
+> ### TypeScript + Express + Handlebars codebase containing real world examples (CRUD, auth, advanced patterns, etc) that adheres to the [RealWorld](https://github.com/gothinkster/realworld) spec.
+
+### [Demo](https://handlebars-realworld.herokuapp.com/)&nbsp;&nbsp;&nbsp;&nbsp;[RealWorld](https://github.com/gothinkster/realworld)
+
+This codebase was created to demonstrate a fully fledged fullstack application including CRUD operations, authentication, routing, pagination, and more.
+
+We've gone to great lengths to adhere to community styleguides & best practices.
+
+For more information head over to the [RealWorld](https://github.com/gothinkster/realworld) repo.
 
 ## About
 
-This is an implementation of the https://github.com/gothinkster/realworld application. Unlike most of the RealWorld apps, which
-separate the backend and the frontend, this one is a server-rendered app with minimal client-side JavaScript. I made this mostly to
-acquaint myself with server-rendered app development, specifically using Handlebars.js, as research for other projects.
+Unlike most RealWorld implementations, which separate the backend and the
+frontend, this one is a "full stack" server-rendered app with minimal
+client-side JavaScript. I made this mostly to acquaint myself with
+server-rendered app development, specifically using Handlebars.js, as research
+for other projects.
 
-There are some incidental UX benefits from server rendering compared to, for example, the reference implementation at
-https://demo.realworld.io/#/. There are no loading spinners, and shareable URLs are used where applicable. You can try out the
-application at https://handlebars-realworld.herokuapp.com/.
+There are some incidental UX benefits from server rendering compared to, for
+example, the reference implementation at https://demo.realworld.io/#/. There are
+no loading spinners, and shareable URLs are used to represent page state where
+applicable. You can try out the application at
+https://handlebars-realworld.herokuapp.com/.
 
-I've also added [Turbolinks](https://github.com/turbolinks/turbolinks) to
-improve performance for server-rendered page loads. This feature was hacked
-together pretty fast and there may be some problems but it seems to be working
-fine so far.
+I've also implemented [Turbolinks](https://github.com/turbolinks/turbolinks) to
+improve perceived performance for server-rendered page loads.
 
 ## Running the app locally
 
