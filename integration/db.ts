@@ -1,15 +1,17 @@
+import { ConnectionOptions } from 'typeorm';
 import { getManager } from 'typeorm';
 import { User } from '../src/entities/User';
 import { Article } from '../src/entities/Article';
 
 export async function addFixtures() {
+  const manager = getManager('default');
   const user = new User();
 
   user.email = 'jake@jake.jake';
   user.username = 'Jacob';
   user.password = 'jakejake';
 
-  await getManager().save(User, user);
+  await manager.save(User, user);
 
   const anArticle = new Article();
   anArticle.author = user;
@@ -19,5 +21,18 @@ export async function addFixtures() {
   anArticle.body = 'You have to believe';
   anArticle.tagList = ['reactjs', 'angularjs', 'dragons'];
 
-  await getManager().save(Article, anArticle);
+  await manager.save(Article, anArticle);
 }
+
+export const testOptions: ConnectionOptions = {
+  type: 'postgres',
+  host: 'localhost',
+  username: 'postgres',
+  password: 'postgres',
+  database: 'typescript_handlebars_realworld_test',
+  synchronize: false,
+  migrationsRun: true,
+  logging: false,
+  entities: ['src/entities/**/*.ts'],
+  migrations: ['src/migrations/**/*.ts'],
+};

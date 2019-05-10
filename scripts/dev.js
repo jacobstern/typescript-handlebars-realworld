@@ -28,7 +28,7 @@ const formatHost = {
 async function main() {
   const rootDir = path.resolve(__dirname, '..');
 
-  const configPath = ts.findConfigFile(rootDir, ts.sys.fileExists, 'tsconfig.json');
+  const configPath = ts.findConfigFile(rootDir, ts.sys.fileExists, 'tsconfig.build.json');
 
   if (!configPath) {
     throw new Error("Could not find a valid 'tsconfig.json'.");
