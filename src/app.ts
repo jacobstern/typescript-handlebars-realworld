@@ -27,6 +27,7 @@ const config = getGeneralConfig();
 
 function getBrowserEnv(config: GeneralConfig) {
   return {
+    CSRF_ENABLED: config.csrfEnabled,
     PORT: config.port,
     NO_TURBOLINKS: config.noTurbolinks,
   };
@@ -104,7 +105,11 @@ app.use(compression());
 app.use(express.urlencoded({ extended: true }));
 app.use(logger(config.morganPreset));
 app.use(cookieParser());
-app.use(csrf({ cookie: true }));
+
+if (config.csrfEnabled) {
+  app.use(csrf({ cookie: true }));
+}
+
 app.use(flash());
 app.use(sessionMiddleware);
 app.use(express.static(path.resolve(__dirname, '../public')));
@@ -116,10 +121,12 @@ app.use(passport.session());
 app.engine('hbs', viewInstance.engine);
 app.set('view engine', 'hbs');
 
-app.use((req, res, next) => {
-  res.locals.csrfToken = req.csrfToken();
-  next();
-});
+if (config.csrfEnabled) {
+  app.use((req, res, next) => {
+    res.locals.csrfToken = req.csrfToken();
+    next();
+  });
+}
 
 app.use((req, res, next) => {
   res.locals.user = req.user;
@@ -144,8 +151,10 @@ app.use(
 
     const statusCode = err instanceof StatusError ? err.status : 500;
 
+    const env = req.app.get('env');
+
     res.status(statusCode).render('error', {
-      error: req.app.get('env') === 'development' ? err : {},
+      error: ['development', 'test'].includes(env) ? err : {},
       statusCode,
       statusText: getStatusText(statusCode),
     });

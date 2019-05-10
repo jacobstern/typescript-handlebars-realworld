@@ -4,7 +4,7 @@
   "description": "",
   "main": "build/server.js",
   "scripts": {
-    "assets": "parcel build 'assets/js/entry/*.js' --out-dir public/build --public-url ./",
+    "assets": "parcel build \"assets/js/entry/*.js\" --out-dir public/build --public-url ./",
     "assets:clean": "rimraf public/build",
     "build": "run-p assets ts",
     "dev": "node ./scripts/dev.js",
@@ -14,8 +14,9 @@
     "start": "node build/server.js",
     "typeorm": "ts-node ./node_modules/typeorm/cli.js",
     "migrate": "ts-node ./node_modules/typeorm/cli.js migration:run -t=false",
-    "lint": "eslint '**/*.js' '**/*.ts'",
-    "prettify": "prettier --write '**/*.js' '**/*.ts'"
+    "lint": "eslint \"**/*.js\" \"**/*.ts\"",
+    "prettify": "prettier --write \"**/*.js\" \"**/*.ts\"",
+    "test": "jest -c integration/jest.config.js --forceExit --detectOpenHandles"
   },
   "repository": {
     "type": "git",
@@ -28,13 +29,25 @@
   },
   "homepage": "https://github.com/jacobstern/typescript-handlebars-realworld#readme",
   "devDependencies": {
+    "@types/cheerio": "0.22.11",
+    "@types/jest": "24.0.12",
+    "@types/qs": "6.5.3",
+    "@types/tough-cookie": "2.3.5",
     "@typescript-eslint/eslint-plugin": "^1.7.0",
     "@typescript-eslint/parser": "^1.7.0",
+    "axios": "^0.18.0",
+    "axios-cookiejar-support": "^0.4.2",
     "chalk": "^2.4.2",
+    "cheerio": "^1.0.0-rc.3",
     "eslint": "^5.16.0",
+    "jest": "^24.8.0",
+    "jest-runner": "^24.8.0",
     "livereload": "^0.7.0",
     "prettier": "^1.17.0",
+    "qs": "^6.7.0",
     "rimraf": "^2.6.3",
+    "tough-cookie": "^3.0.1",
+    "ts-jest": "^24.0.2",
     "ts-node": "^8.1.0",
     "ts-node-dev": "github:whitecolor/ts-node-dev#0f90573b0ee0cf3981ad3017df0848fd7cf192fd"
   },

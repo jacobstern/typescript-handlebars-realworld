@@ -10,12 +10,12 @@
         </p>
 
         {{#if errorMessages}}
-          <ul class="error-messages">
+          <ul class="error-messages" data-testid="login-error-messages">
             {{#each errorMessages}}<li>{{this}}</li>{{/each}}
           </ul>
         {{/if}}
 
-        <form target="" method="POST">
+        <form target="" method="POST" data-testid="login-form">
           <fieldset class="form-group">
             <input class="form-control form-control-lg" type="email" placeholder="Email" name="email">
           </fieldset>

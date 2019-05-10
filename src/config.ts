@@ -5,6 +5,7 @@ import env from 'getenv';
  * managed in `ormconfig.js`.
  */
 export interface GeneralConfig {
+  csrfEnabled: boolean;
   port: number;
   cookieSecret: string;
   morganPreset: string;
@@ -14,7 +15,8 @@ export interface GeneralConfig {
 
 export function getGeneralConfig(): GeneralConfig {
   const baseConfig = {
-    nodeEnv: env('NODE_ENV', null),
+    nodeEnv: process.env.NODE_ENV,
+    csrfEnabled: process.env.NODE_ENV !== 'test',
     port: env.int('PORT', 3000),
     noTurbolinks: env.boolish('NO_TURBOLINKS', false),
   };
