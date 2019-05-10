@@ -16,5 +16,5 @@
     "outDir": "build/",
     "typeRoots": ["node_modules/@types/", "src/types"]
   },
-  "exclude": ["node_modules/", "build/", "public/"]
+  "exclude": ["node_modules/", "build/", "public/", "integration/"]
 }
