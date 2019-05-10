@@ -1,0 +1,8 @@
+{
+  "environments": {
+    "test": {
+      "env": { "POSTGRESQL_VERSION": "10" },
+      "addons": ["heroku-postgresql:in-dyno"]
+    }
+  }
+}

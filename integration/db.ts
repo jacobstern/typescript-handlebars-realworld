@@ -1,5 +1,5 @@
-import { ConnectionOptions } from 'typeorm';
-import { getManager } from 'typeorm';
+import { getManager, ConnectionOptions } from 'typeorm';
+import env from 'getenv';
 import { User } from '../src/entities/User';
 import { Article } from '../src/entities/Article';
 
@@ -26,10 +26,10 @@ export async function addFixtures() {
 
 export const testOptions: ConnectionOptions = {
   type: 'postgres',
-  host: 'localhost',
-  username: 'postgres',
-  password: 'postgres',
-  database: 'typescript_handlebars_realworld_test',
+  url: env(
+    'DATABASE_URL',
+    'postgres://postgres:postgres@localhost/typescript_handlebars_realworld_test'
+  ),
   synchronize: false,
   migrationsRun: true,
   logging: false,
