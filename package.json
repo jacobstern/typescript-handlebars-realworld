@@ -8,7 +8,7 @@
     "assets:clean": "rimraf public/build",
     "build": "run-p assets ts",
     "dev": "node ./scripts/dev.js",
-    "ts": "tsc",
+    "ts": "tsc -p tsconfig.build.json",
     "ts:check": "tsc --noEmit",
     "repl": "node --experimental-repl-await -r ts-node/register scripts/repl.js",
     "start": "node build/server.js",
