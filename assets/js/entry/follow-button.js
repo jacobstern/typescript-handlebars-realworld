@@ -5,7 +5,7 @@ function updateButton(button, profile) {
   const icon = button.querySelector('i');
   const text = button.querySelector('[data-follow-button-text]');
   if (profile.following) {
-    button.dataset.following = '';
+    btton.dataset.following = '';
     icon.className = 'ion-close';
     text.innerText = 'Unfollow ' + button.dataset.profile;
   } else {
