@@ -31,11 +31,10 @@ improve perceived performance for server-rendered page loads.
 
 This project requires a global https://yarnpkg.com/en/ installation for
 development. You will also need a local Postgres instance with user `postgres`
-and password `postgres` by default, with a database called
-`typescript_handlebars_realworld_dev` (and
-`typescript_handlebars_realworld_test` if you're running the tests).
+and password `postgres` by default.
 
 - Get started/install: `yarn`
+- Create necessary databases: `yarn create-databases`
 - Run the app in watch mode: `yarn dev`
 - Run integration tests: `yarn test`
 

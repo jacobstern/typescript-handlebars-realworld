@@ -17,7 +17,8 @@
     "lint": "eslint \"**/*.js\" \"**/*.ts\"",
     "prettify": "prettier --write \"**/*.js\" \"**/*.ts\"",
     "test": "jest -c integration/jest.config.js --forceExit --detectOpenHandles",
-    "test:watch": "yarn test --watch"
+    "test:watch": "yarn test --watch",
+    "create-databases": "node ./scripts/create-databases.js"
   },
   "repository": {
     "type": "git",
