@@ -1,8 +1,6 @@
-/* globals process */
-
 export function fetchWithCsrf(url, requestInit) {
   const headers = requestInit.headers || {};
-  if (process.env.CSRF_ENABLED) {
+  if (window.env.CSRF_ENABLED) {
     const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
     headers['CSRF-Token'] = token;
   }

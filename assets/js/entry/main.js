@@ -1,7 +1,5 @@
 import Turbolinks from 'turbolinks';
 
-/* globals process */
-
-if (!process.env.NO_TURBOLINKS) {
+if (!window.env.NO_TURBOLINKS) {
   Turbolinks.start();
 }
