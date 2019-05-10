@@ -1,5 +1,7 @@
 # ![RealWorld Example App](logo.png)
 
+[![Heroku CI Status](https://handlebars-realworld-ci-badge.herokuapp.com/last.svg)](https://dashboard.heroku.com/pipelines/55c0cf7b-a5e3-49c8-bd86-86845c9fab29/tests)
+
 > ### TypeScript + Express + Handlebars codebase containing real world examples (CRUD, auth, advanced patterns, etc) that adheres to the [RealWorld](https://github.com/gothinkster/realworld) spec.
 
 ### [Demo](https://handlebars-realworld.herokuapp.com/)&nbsp;&nbsp;&nbsp;&nbsp;[RealWorld](https://github.com/gothinkster/realworld)
