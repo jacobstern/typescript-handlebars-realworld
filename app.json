@@ -2,7 +2,9 @@
   "environments": {
     "test": {
       "env": { "POSTGRESQL_VERSION": "10" },
-      "test": "yarn test:ci",
+      "scripts": {
+        "test": "yarn test:ci"
+      },
       "addons": ["heroku-postgresql:in-dyno"]
     }
   }
