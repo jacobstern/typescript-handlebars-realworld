@@ -6,7 +6,7 @@ import { isValidationErrorArray, collectErrorMessages } from '../utils/validatio
 const router = express.Router();
 
 router.get('/', (_req: Request, res: Response) => {
-  res.render('register/index', {
+  res.render('register/index.hbs', {
     title: 'Sign up',
     nav: { register: true },
   });
@@ -35,7 +35,7 @@ router.post('/', async (req: Request, res: Response, next: NextFunction) => {
     });
   } catch (e) {
     if (isValidationErrorArray(e)) {
-      res.render('register/index', {
+      res.render('register/index.hbs', {
         title: 'Sign up',
         nav: { register: true },
         errorMessages: collectErrorMessages(e),

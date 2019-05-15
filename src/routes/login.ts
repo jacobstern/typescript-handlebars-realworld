@@ -4,7 +4,7 @@ import passport from 'passport';
 const router = express.Router();
 
 router.get('/', (req: Request, res: Response) => {
-  res.render('login', {
+  res.render('login.hbs', {
     title: 'Sign in',
     nav: { login: true },
     errorMessages: req.flash('error'),

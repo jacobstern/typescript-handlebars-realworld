@@ -8,7 +8,7 @@ import { NextFunction } from 'connect';
 const router = express.Router();
 
 router.get('/', ensureLoggedIn(), (req: Request, res: Response) => {
-  res.render('settings', {
+  res.render('settings.hbs', {
     title: 'Settings',
     nav: { settings: true },
     profile: req.user,
@@ -39,7 +39,7 @@ router.post('/', ensureLoggedIn(), async (req: Request, res: Response) => {
     res.redirect(`/profile/${encodeURIComponent(user.username)}`);
   } catch (e) {
     if (isValidationErrorArray(e)) {
-      res.render('settings', {
+      res.render('settings.hbs', {
         title: 'Settings',
         nav: { settings: true },
         errorMessages: collectErrorMessages(e),

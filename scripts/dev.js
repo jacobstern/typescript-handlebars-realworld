@@ -47,7 +47,7 @@ async function main() {
   ts.createWatchProgram(host);
 
   const livereloadServer = livereload.createServer({
-    exts: ['hbs', 'js'],
+    exts: ['hbs', 'js', 'ejs'],
   });
   livereloadServer.watch([path.resolve(rootDir, 'views/')]);
 

@@ -55,7 +55,7 @@ router.get('/:username', async (req: Request, res: Response) => {
     }
   }
 
-  res.render('profile', {
+  res.render('profile.hbs', {
     nav: { userProfile },
     profile: { ...profile, following, mine: userProfile },
     articles: articles.map(article => ({

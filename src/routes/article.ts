@@ -30,7 +30,7 @@ router.get('/:slug', async (req: Request, res: Response) => {
 
   const comments = await commentRepo.list({ article });
 
-  res.render('article', {
+  res.render('article.hbs', {
     title: article.title,
     article: {
       ...article,

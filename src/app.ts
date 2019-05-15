@@ -120,6 +120,7 @@ app.use(passport.session());
 
 app.engine('hbs', viewInstance.engine);
 app.set('view engine', 'hbs');
+app.set('view engine', 'ejs');
 
 if (config.csrfEnabled) {
   app.use((req, res, next) => {
@@ -153,7 +154,7 @@ app.use(
 
     const env = req.app.get('env');
 
-    res.status(statusCode).render('error', {
+    res.status(statusCode).render('error.hbs', {
       error: ['development', 'test'].includes(env) ? err : {},
       statusCode,
       statusText: getStatusText(statusCode),

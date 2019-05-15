@@ -105,7 +105,7 @@ router.get('/', async (req: Request, res: Response) => {
   const baseUrl = makeBaseUrl(filter, tag); // URL without page query param
   const [articles, count] = result;
 
-  res.render('home', {
+  res.render('home.hbs', {
     title: 'Home',
     nav: stringUnionHash('home'),
     popularTags: await repo.listPopularTags(),

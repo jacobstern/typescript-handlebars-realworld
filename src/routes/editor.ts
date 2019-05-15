@@ -9,9 +9,10 @@ import { isValidationErrorArray, collectErrorMessages } from '../utils/validatio
 const router = express.Router();
 
 router.get('/', ensureLoggedIn(), (req: Request, res: Response) => {
-  res.render('editor', {
+  res.render('editor.ejs', {
     title: 'New post',
     nav: { newPost: true },
+    article: {},
     extraScripts: ['/build/editor.js'],
   });
 });
@@ -25,7 +26,7 @@ router.get('/:slug', ensureLoggedIn(), async (req: Request, res: Response) => {
   if (req.user.id !== article.author.id) {
     throw new StatusError('Forbidden', 403);
   }
-  res.render('editor', {
+  res.render('editor.hbs', {
     title: 'Edit post',
     article,
     extraScripts: ['/build/editor.js'],
@@ -54,7 +55,7 @@ router.post('/', ensureLoggedIn(), async (req: Request, res: Response) => {
     res.redirect(`/article/${article.slug}`);
   } catch (e) {
     if (isValidationErrorArray(e)) {
-      res.render('editor', {
+      res.render('editor.ejs', {
         title: 'New post',
         nav: { newPost: true },
         article: postBody,
@@ -89,7 +90,7 @@ router.post('/:slug', ensureLoggedIn(), async (req: Request, res: Response) => {
     res.redirect(`/article/${article.slug}`);
   } catch (e) {
     if (isValidationErrorArray(e)) {
-      res.render('editor', {
+      res.render('editor.ejs', {
         title: 'Edit post',
         article: req.body,
         errorMessages: collectErrorMessages(e),
