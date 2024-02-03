@@ -1,7 +1,3 @@
-# NOTE TO READERS IN 2023 AND BEYOND
-
-For some reason people have been starring this repo recently. To be clear, this implementation was an experiment and, while the code is still exemplary in some respects, I do NOT personally recommend this pattern for developing new web applications. Thanks.
-
 # ![RealWorld Example App](logo.png)
 
 [![Heroku CI Status](https://handlebars-realworld-ci-badge.herokuapp.com/last.svg)](https://dashboard.heroku.com/pipelines/55c0cf7b-a5e3-49c8-bd86-86845c9fab29/tests)
